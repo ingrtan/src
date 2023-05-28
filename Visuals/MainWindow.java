@@ -175,8 +175,7 @@ public class MainWindow {
         statusDropdown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedStatus = (String)statusDropdown.getSelectedItem();
-                int stageIndex = statusToStageIndexMap.get(selectedStatus);
-                stagePanelLayout.show(stagePanelContainer, "Stage " + (stageIndex + 1));
+                stagePanelLayout.show(stagePanelContainer, selectedStatus);
             }
         });
         buttonsPanel.add(statusDropdown);
@@ -296,11 +295,11 @@ public class MainWindow {
             if(nonDeterministic){
                 ConvertNonDeterministic converter = new ConvertNonDeterministic();
                 head = converter.convert(stageTables, statuses, numberOfLines);
-                StatusSaver.saveStatusToFile(head.getStatuses(), "status.txt");
+                StatusSaver.saveStatusToFile(head.getStatuses(), "converted.txt");
             }else{
                 converterMultiTread = new ConverterMultiTread();
                 head = converterMultiTread.convert(stageTables, statuses, numberOfLines);
-                StatusSaver.saveStatusToFile(head.getStatuses(), "status.txt");
+                StatusSaver.saveStatusToFile(head.getStatuses(), "converted.txt");
             }
             initializeShowcasePanel();
             cardLayout.show(panelContainer, "Setup");
