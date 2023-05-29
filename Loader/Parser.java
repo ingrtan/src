@@ -1,7 +1,6 @@
 package Loader;
 
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;

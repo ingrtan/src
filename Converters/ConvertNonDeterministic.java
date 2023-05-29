@@ -3,11 +3,7 @@ package Converters;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import javax.print.attribute.Size2DSyntax;
 import javax.swing.JTable;
-import javax.swing.plaf.nimbus.State;
-import javax.xml.crypto.Data;
-
 import Data.Head;
 import Data.Rule;
 import Data.Status;
@@ -52,6 +48,7 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
             throw new WrongTableException("Empty First Element.");
         }
         super.fillBlank();
+        super.chooserStatus = this.chooserStatus;
         columnData = getCharacterlist();
         createCharactercombinations();
         createAllposibleCombinations();
@@ -124,6 +121,7 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
                     createNonDeterministicRule(data, statusList.get(i), duplicates, statuses.get(i));
                     isDuplicate = false;
                 }else{
+                    System.out.println("createBaseRule " + statusList.get(i));
                     createBaseRule(data[j], statusList.get(i), statuses.get(i));
                 }
                 duplicates.clear();
@@ -192,11 +190,11 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
             direction.append(row[i+2]);
             direction.append("#");
         }
-        chooserStatus.addRule(new Rule(read.toString() + status + "#", read.toString() + row[0] + "#" + direction, Movement.STAY, status));
+        chooserStatus.addRule(new Rule(read.toString() + statusName + "#", read.toString() + row[0] + "#", Movement.STAY, status));
         write.append(row[0]);
         write.append("#");
         write.append(direction.toString());
-        status.addRule(new Rule(read.toString(),write.toString(),Movement.RIGHT,chooserStatus));
+        status.addRule(new Rule(read.toString() + statusName + "#",write.toString(),Movement.RIGHT,chooserStatus));
     }
 
     private void createNonDeterministicRule(Object[][] table, String currentStage, ArrayList<Integer> duplicates, Status stage){
