@@ -78,6 +78,9 @@ public class MainWindow {
     private CardLayout cardLayout;
     private String fileName;
 
+    /**
+     * Initialize the contents of the frame.
+     */
     public MainWindow() {
         initializeFrame();
         initializeMenubar();
@@ -88,6 +91,9 @@ public class MainWindow {
         showFrame();
     }
 
+    /**
+     * Initialize the contents of the edior panel.
+     */
     private void setupEditorPanel() {
         initializeStatusDropdown();
         initializeAddStatusButton();
@@ -96,6 +102,9 @@ public class MainWindow {
         initializeStageTables();
     }
 
+    /**
+    * Recreates the frame content to start a new Turing machine editor.
+     */
     private void createNew(){
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setVisible(false);
@@ -108,12 +117,18 @@ public class MainWindow {
         convertButton();
         showFrame();
     }
-
+    
+    /**
+     * Setups the main JFrame of the window.
+     */
     private void initializeFrame() {
         frame = new JFrame("Turing Simulator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Initializes the Meunbar on the top of thw window.
+     */ 
     private void initializeMenubar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -161,6 +176,9 @@ public class MainWindow {
         frame.setJMenuBar(menuBar);
     }
 
+    /**
+     * Inicializes the panels used in the frame.
+     */
     private void initializePanels(){
         editorPanel = new JPanel(new BorderLayout());
         showcasePanel = new JPanel();
@@ -168,6 +186,9 @@ public class MainWindow {
         runPanel = new JPanel(new BorderLayout());
     }
 
+    /**
+     * Setups the dropdown menu for the status selection.
+     */
     private void initializeStatusDropdown(){
         statuses = new ArrayList<>();
         statuses.add("Start");
@@ -182,6 +203,9 @@ public class MainWindow {
         buttonsPanel.add(statusDropdown);
     }
 
+    /**
+     * Setups the button for adding a new status.
+     */
     private void initializeAddStatusButton() {
         addStatusButton = new JButton("Add Status");
         addStatusButton.addActionListener(new ActionListener() {
@@ -196,6 +220,9 @@ public class MainWindow {
         buttonsPanel.add(addStatusButton);
     }
 
+    /**
+     * Setups the button for adding a new row to the table.
+     */
     private void initializeAddRowButton(){
         JButton addRowButton = new JButton(new AbstractAction("Add Row") {
             @Override
@@ -210,6 +237,9 @@ public class MainWindow {
         buttonsPanel.add(addRowButton);
     }
 
+    /**
+     * Setups the button for removing a row from the table.
+     */
     private void initializeRemoveRowButton(){
         JButton removeRowButton = new JButton(new AbstractAction("Remove Row") {
             @Override
@@ -227,6 +257,9 @@ public class MainWindow {
         buttonsPanel.add(removeRowButton);
     }
 
+    /**
+     * Setups the tables for each status.
+     */
     private void initializeStageTables() {
         stageTables = new ArrayList<>();
         stagePanelContainer = new JPanel();
@@ -240,6 +273,9 @@ public class MainWindow {
         editorPanel.add(stagePanelContainer);
     }
 
+    /**
+     * Setups the panel containing the panels for each state the proram can be in.
+     */
     private void initializePanelContainer(){
         editorPanel.add(buttonsPanel, BorderLayout.NORTH);
         editorPanel.add(stagePanelContainer);
@@ -252,6 +288,9 @@ public class MainWindow {
         frame.add(panelContainer);
     }
 
+    /**
+     * Shows the frame.
+     */
     private void showFrame(){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize);
@@ -259,6 +298,11 @@ public class MainWindow {
         frame.setVisible(true);
     }
 
+    /**
+     * Adds a new status to the editor.
+     * @param i The index of the status.
+     * @param status The name of the status.
+     */
     private void addStatus(int i, String status){
         ArrayList<String> line = new ArrayList<>();
         line.add("Status");
@@ -281,6 +325,9 @@ public class MainWindow {
         statusToStageIndexMap.put(status, i);
     }
 
+    /**
+     * Initializes the button for starting the conversion.
+     */
     private void convertButton(){
         JButton convertButton = new JButton(new AbstractAction("Convert") {
             @Override
@@ -291,6 +338,9 @@ public class MainWindow {
         buttonsPanel.add(convertButton);
     }
 
+    /**
+     * Converts the tables to a single Turing Machine, changes to the next panel and saves the status to a file.
+     */
     private void convert(){
         try{
             if(nonDeterministic){
@@ -311,6 +361,9 @@ public class MainWindow {
         
     }
     
+    /**
+     * Initializes the panel which makes the user create a starting thread.
+     */
     private void initializeShowcasePanel(){
         Object[][] data = new Object[1][1];
         TableModel model = new DefaultTableModel(data, new String[1]);
@@ -343,10 +396,20 @@ public class MainWindow {
         showcasePanel.add(stageTableScrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Adds a row to a table.
+     * @param table The table which needs a new row.
+     * @param model The model of the table.
+     */
     private void addRow(JTable table, DefaultTableModel model) {
         model.addRow(new Object[table.getColumnCount()]);
     }
 
+    /**
+     * Removes the selected row from a table
+     * @param table The table which needs a row removed.
+     * @param model The model of the table.
+     */
     private void removeSelectedRow(JTable table, DefaultTableModel model) {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
@@ -354,6 +417,9 @@ public class MainWindow {
         }
     }
 
+    /**
+     * Starts to run the Turing Machine.
+     */
     private void start(){
         head.setup(getColumnData());
         initializeRunPanel();
@@ -397,6 +463,9 @@ public class MainWindow {
         System.out.println("Stopped");
     }
 
+    /**
+     * Inicializes the run panel.
+     */
     private void initializeRunPanel(){
         JSlider slider = new JSlider(0, 30);
         runPanel.setLayout(new GridLayout(3, 3));
@@ -439,20 +508,36 @@ public class MainWindow {
         panelContainer.repaint();
     }
     
+    /**
+     * Sets the value of the slider.
+     */
     private void setSliderValue(int value) {
         time = value;
     }
 
+    /**
+     * Stops the process.
+     */
     private void stopProcess(){
         running = false;
     }
 
+    /**
+     * Sets the values of the textfields to the strings.
+     * @param string1 String for the first textfield.
+     * @param string2 String for the second textfield.
+     * @param string3 String for the third textfield.
+     */
     private void setStringValues(String string1, String string2, String string3) {
         stringField1.setText(string1);
         stringField2.setText(string2);
         stringField3.setText(string3);
     }
 
+    /**
+     * Gets the data from the table.
+     * @return The data from the table.
+     */
     private ArrayList<String> getColumnData() {
         if(inputTable.isEditing()){
             inputTable.getCellEditor().stopCellEditing();
@@ -471,6 +556,9 @@ public class MainWindow {
         return columnData;
     }
 
+    /**
+     * Saves the data to a file.
+     */
     private void save(){
         Parser parser = new Parser();
         HashMap<String, JTable> dataToSave = new HashMap<>();
@@ -480,6 +568,9 @@ public class MainWindow {
         parser.save(fileName, dataToSave);
     }
 
+    /**
+     * Loads the data from a file.
+     */
     private void load(){
         Parser parser = new Parser();
         HashMap<String, JTable> dataToLoad = parser.load(fileName);
@@ -497,6 +588,9 @@ public class MainWindow {
         }
     }
 
+    /**
+     * The window which used to add a status to the Turing Machine.
+     */
     private class AddStatusWindow extends JFrame {
         private static final long serialVersionUID = 1L;
         private JTextField statusField;
@@ -541,6 +635,9 @@ public class MainWindow {
         }
     }
 
+    /**
+     * The window which used to start creating a new Turing Machine.
+     */
     private class NewWindow extends JFrame{
         private static final long serialVersionUID = 1L;
         private JTextField numberOfLinesField;
@@ -584,6 +681,9 @@ public class MainWindow {
     
     }
 
+    /**
+     * A window which warns the user that the table is wrong.
+     */
     private class WrongTableWarning extends JFrame{
         private static final long serialVersionUID = 1L;
         private JButton okButton;
@@ -616,6 +716,9 @@ public class MainWindow {
         }
     }
 
+    /**
+     * A window which used to save the Turing Machine.
+     */
     private class SaveWindow extends JFrame{
         private static final long serialVersionUID = 1L;
         private JTextField fileNameField;
@@ -655,6 +758,9 @@ public class MainWindow {
         }
     }
 
+    /**
+     * A window which used to load a Turing Machine.
+     */
     private class LoadWindow extends JFrame{
         private static final long serialVersionUID = 1L;
         private JTextField fileNameField;
