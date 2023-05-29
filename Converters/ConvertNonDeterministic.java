@@ -1,4 +1,4 @@
-package Loader;
+package Converters;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,6 +30,7 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
     ArrayList<Status> choosableStatuses = new ArrayList<>();
     private ArrayList<Status> copyEditingStatuses = new ArrayList<>();
     private Status clearerRight = new Status("ClearerRight");
+    private Status clearerRightCheck = new Status("ClearerRightCheck");
     private Status clearerLeft = new Status("ClearerLeft");
     private Status resetStatus = new Status("ResetStatus");
     private Status checkStatus = new Status("CheckStatus");
@@ -78,6 +79,7 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         statuses.addAll(movers);
         statuses.add(startNewThread);
         statuses.add(clearerRight);
+        statuses.add(clearerRightCheck);
         statuses.add(clearerLeft);
         statuses.add(resetStatus);
         statuses.addAll(createConvertStatuses());
@@ -402,13 +404,16 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         for(String stringy : allPosibleCombinations){
             if(stringy.equals("#") || stringy.equals("#X")){
                 clearerRight.addRule(new Rule(stringy, stringy, Movement.STAY, chooserStatus));
+                clearerRightCheck.addRule(new Rule(stringy, stringy, Movement.STAY, checkStatus));
                 clearerLeft.addRule(new Rule(stringy, stringy, Movement.STAY, resetStatus));
             }else{
                 clearerRight.addRule(new Rule(stringy, "X", Movement.RIGHT, clearerRight));
+                clearerRightCheck.addRule(new Rule(stringy, "X", Movement.RIGHT, clearerRightCheck));
                 clearerLeft.addRule(new Rule(stringy, "X", Movement.LEFT, clearerLeft));
             }
         }
         resetStatus.addRule(new Rule("X", "X", Movement.LEFT, clearerLeft));
+        checkStatus.addRule(new Rule("X", "X", Movement.RIGHT, clearerRightCheck));
         chooserStatus.addRule(new Rule("X", "X", Movement.RIGHT, clearerRight));
     }
 

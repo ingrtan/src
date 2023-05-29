@@ -16,9 +16,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import Converters.ConvertNonDeterministic;
+import Converters.ConverterMultiTread;
 import Data.Head;
-import Loader.ConvertNonDeterministic;
-import Loader.ConverterMultiTread;
 import Loader.Parser;
 import Loader.StatusSaver;
 import Resources.WrongTableException;
@@ -171,6 +171,7 @@ public class MainWindow {
     private void initializeStatusDropdown(){
         statuses = new ArrayList<>();
         statuses.add("Start");
+        statuses.add("Accept");
         statusDropdown = new JComboBox<>(statuses.toArray(new String[0]));
         statusDropdown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
