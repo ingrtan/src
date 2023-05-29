@@ -146,6 +146,11 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         return statuses;
     }
 
+    /**
+     * Creates the write strings from the data.
+     * @param data
+     * @return
+     */
     private HashSet<String> getWrite(Object[][] data){
         HashSet<String> write = new HashSet<>();
         StringBuilder sb = new StringBuilder();
@@ -159,6 +164,11 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         return write;
     }
 
+    /**
+     * Creates the string from the combination.
+     * @param row
+     * @return
+     */
     private String getRowString(Object[] row){
         StringBuilder sb = new StringBuilder();
         for(int i = 1; i < row.length;i+=3){
@@ -178,6 +188,12 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         }
     } 
     
+    /**
+     * Creates a base rule for a base status.
+     * @param row 
+     * @param statusName
+     * @param status
+     */
     private void createBaseRule(Object[] row, String statusName, Status status){
         StringBuilder read = new StringBuilder();
         StringBuilder write = new StringBuilder();
@@ -197,6 +213,13 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         status.addRule(new Rule(read.toString() + statusName + "#",write.toString(),Movement.RIGHT,chooserStatus));
     }
 
+    /**
+     * Creates a non deterministic rule for a non deterministic status.
+     * @param table
+     * @param currentStage
+     * @param duplicates
+     * @param stage
+     */
     private void createNonDeterministicRule(Object[][] table, String currentStage, ArrayList<Integer> duplicates, Status stage){
         StringBuilder read = new StringBuilder();
         StringBuilder write = new StringBuilder();
@@ -251,6 +274,11 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         }
     }
 
+    /**
+     * Creates a deterministic rule for a deterministic status.
+     * @param name
+     * @return
+     */
     private Status searchStatusByName(String name){
         for(Status status : choosableStatuses){
             if(status.getName().equals(name)){
@@ -260,6 +288,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         return null;
     }
 
+    /**
+     * Creates the pusher statuses.
+     */
     private void createPushers(){
         ArrayList<Status> pushersLeft = new ArrayList<>();
         ArrayList<Status> pushersRight = new ArrayList<>();
@@ -288,6 +319,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         }
     }
 
+    /**
+     * Creates the copy statuses for the converted Turing machine.
+     */
     private void createCopyStatuses(){
         Status copyStatus;
         for(String stringy : allPosibleCombinations){
@@ -306,6 +340,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         
     }
 
+    /**
+     * Creates the combinations avaible for the statuses to read.
+     */
     private void createAllposibleCombinations(){
         ArrayList<String> movementCombinations = new ArrayList<>();
         for(int i = 0; i < combinations.size(); i++){
@@ -325,6 +362,10 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         everyPosibleCombinations.addAll(allPosibleCombinations);
     }
 
+    /**
+     * Creates pusher starters from the right.
+     * @param pusher
+     */
     private void pusherStarterRight(Status pusher){
         ArrayList<String> blanks = new ArrayList<>();
         for(int i = 0; i < threadCount; i++){
@@ -350,6 +391,10 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         }
     }
 
+    /**
+     * Creates pusher starters from the left.
+     * @param pusher
+     */
     private void pusherStarterLeft(Status pusher){
         ArrayList<String> blanks = new ArrayList<>();
         for(int i = 0; i < threadCount; i++){
@@ -376,6 +421,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
 
     }
 
+    /**
+     * Creates the search rules for the converted Turing machine.
+     */
     private void createSearchRules(){
         for(String stringy : allPosibleCombinations){
             if(stringy.contains("#")){
@@ -391,6 +439,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         }
     }
 
+    /**
+     * Creates the new thread starter state for the converted Turing machine.
+     */
     private void startNewThread(){
         for(String stringy : allPosibleCombinations){
             startNewThread.addRule(new Rule(stringy, stringy, Movement.RIGHT, startNewThread));
@@ -398,6 +449,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         startNewThread.addRule(new Rule("Blank", "#", Movement.LEFT, goLeftCopy));
     }
 
+    /**
+     * Creates statuses which clean the finished threads.
+     */
     private void createClearers(){
         for(String stringy : allPosibleCombinations){
             if(stringy.equals("#") || stringy.equals("#X")){
@@ -415,6 +469,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         chooserStatus.addRule(new Rule("X", "X", Movement.RIGHT, clearerRight));
     }
 
+    /**
+     * Creates the status which resets all the non finished tapes.
+     */
     private void createResetStatus(){
         for(String stringy : allPosibleCombinations){
             
@@ -435,6 +492,9 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
         resetStatus.addRule(new Rule("Blank", "Blank", Movement.RIGHT, checkStatus));
     }
 
+    /**
+     * Adds the movment rules to the chooser status.
+    */
     private void addMoversToChooser(){
         StringBuilder write = new StringBuilder();
         StringBuilder sign = new StringBuilder();

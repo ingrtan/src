@@ -78,6 +78,7 @@ public class MainWindow {
     private JTable inputTable;
     private CardLayout cardLayout;
     private String fileName;
+    private boolean pause = false;
 
     /**
      * Initialize the contents of the frame.
@@ -443,6 +444,13 @@ public class MainWindow {
                 System.out.println("Started");
                 ArrayList<String> lines = new ArrayList<>();
                 while(running){
+                    while(pause){
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     System.out.println(head.getStatuString());
                     head.run();
                     lines = head.getLines();
@@ -476,7 +484,7 @@ public class MainWindow {
      */
     private void initializeRunPanel(){
         JSlider slider = new JSlider(0, 30);
-        runPanel.setLayout(new GridLayout(3, 3));
+        runPanel.setLayout(new BorderLayout());
         slider.setMajorTickSpacing(1);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
@@ -491,27 +499,57 @@ public class MainWindow {
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                stopProcess();
+                if(pause){
+                    continueProcess();
+                    stopButton.setText("Stop");
+                }else{
+                    stopProcess();
+                    stopButton.setText("Continue");
+                }
             }
         });
+        JButton stopButton2 = new JButton("Stop session");
+        stopButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                continueProcess();
+                stopTheCount();
+            }
+        });
+        JPanel srtingContainer = new JPanel();
         stringField1 = new JTextField(10);
         stringField2 = new JTextField(10);
         stringField3 = new JTextField(10);
-        stringPanel1 = new JPanel();
+        stringPanel1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         stringPanel1.add(new JLabel(""));
         stringPanel1.add(stringField1);
-        runPanel.add(stringPanel1);
+        srtingContainer.add(stringPanel1);
         stringPanel2 = new JPanel();
         stringPanel2.add(new JLabel(""));
         stringPanel2.add(stringField2);
-        runPanel.add(stringPanel2);
+        srtingContainer.add(stringPanel2);
         stringPanel3 = new JPanel();
         stringPanel3.add(new JLabel(""));
         stringPanel3.add(stringField3);
-        runPanel.add(stringPanel3);
-        runPanel.add(stopButton);
-        runPanel.add(slider);
+        srtingContainer.add(stringPanel3);
+        JPanel buttonHolderpanel = new JPanel();
+        buttonHolderpanel.setLayout(new BorderLayout());
+        runPanel.add(srtingContainer, BorderLayout.NORTH);
+        buttonHolderpanel.add(stopButton, BorderLayout.EAST);
+        buttonHolderpanel.add(stopButton2, BorderLayout.WEST);
+        runPanel.add(buttonHolderpanel, BorderLayout.SOUTH);
+        runPanel.add(slider, BorderLayout.CENTER);
         cardLayout.show(panelContainer, "Run");
+        panelContainer.revalidate();
+        panelContainer.repaint();
+    }
+
+    /**
+     * Stops the running of the Turing Machine.
+     */
+    private void stopTheCount() {
+        running = false;
+        cardLayout.show(panelContainer, "Edit");
         panelContainer.revalidate();
         panelContainer.repaint();
     }
@@ -527,7 +565,11 @@ public class MainWindow {
      * Stops the process.
      */
     private void stopProcess(){
-        running = false;
+        pause = true;
+    }
+
+    private void continueProcess(){
+        pause = false;
     }
 
     /**
