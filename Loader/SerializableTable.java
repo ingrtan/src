@@ -1,9 +1,11 @@
 package Loader;
 
+import java.io.Serializable;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class SerializableTable {
+public class SerializableTable implements Serializable{
     private Object[][] data;
     private Object[] columnNames;
 
