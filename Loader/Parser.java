@@ -42,7 +42,6 @@ public class Parser {
             objectIn.close();
             fileIn.close();
             System.out.println("Data loaded successfully from " + fileName);
-            System.out.println("Data: " + ((DataWrapper)object).toString());
             return (DataWrapper) object;
         } catch (Exception e) {
             System.out.println("An error occurred while loading the data: " + e.getMessage());

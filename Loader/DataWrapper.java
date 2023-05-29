@@ -38,6 +38,11 @@ public class DataWrapper implements Serializable {
         }
 
         public String toString(){
-            return "boolValue: " + this.boolValue + "\nintValue: " + this.intValue + "\n" + this.tables.toString() + "\n" + this.names.toString();
+            StringBuilder returningValue = new StringBuilder();
+            returningValue.append("boolValue: ").append(this.boolValue).append("\nintValue: ").append(this.intValue).append("\n");
+            for(int i = 0; i < this.tables.size(); i++){
+                returningValue.append("Table ").append(this.names.get(i)).append(":\n").append(this.tables.get(i).toString()).append("\n");
+            }
+            return returningValue.toString();
         }
 }

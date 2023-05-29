@@ -326,6 +326,13 @@ public class MainWindow {
         statusToStageIndexMap.put(status, i);
     }
 
+    private void addStatus(int i, String status, JTable table){
+        JScrollPane stageTableScrollPane = new JScrollPane(table);
+        stageTables.add(table);
+        stagePanelContainer.add(stageTableScrollPane, status);
+        statusToStageIndexMap.put(status, i);
+    }
+
     /**
      * Initializes the button for starting the conversion.
      */
@@ -585,7 +592,7 @@ public class MainWindow {
         for(String status : data.keySet()){
             statuses.add(status);
             statusDropdown.addItem(status);
-            addStatus(statuses.size() - 1, status);
+            addStatus(statuses.size() - 1, status, data.get(status));
             stageTables.add(data.get(status));
             JScrollPane scrollPane = new JScrollPane(stageTables.get(stageTables.size() - 1));
             stagePanelContainer.add(scrollPane, status);

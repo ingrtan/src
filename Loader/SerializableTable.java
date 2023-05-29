@@ -31,4 +31,8 @@ public class SerializableTable implements Serializable{
     public JTable toJTable() {
         return new JTable(new DefaultTableModel(data, columnNames));
     }
+
+    public String toString(){
+        return "data: " + this.data.toString() + "\ncolumnNames: " + this.columnNames.toString();
+    }
 }
