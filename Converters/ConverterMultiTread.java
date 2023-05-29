@@ -13,7 +13,7 @@ import Data.Rule;
 import Data.Status;
 import Resources.Movement;
 import Resources.WrongTableException;
-
+ 
 public class ConverterMultiTread {
     protected int threadCount = 0;
     protected ArrayList<String> statusList = new ArrayList<>();

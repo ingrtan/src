@@ -19,6 +19,7 @@ import javax.swing.table.TableModel;
 import Converters.ConvertNonDeterministic;
 import Converters.ConverterMultiTread;
 import Data.Head;
+import Loader.DataWrapper;
 import Loader.Parser;
 import Loader.StatusSaver;
 import Resources.WrongTableException;
@@ -565,7 +566,7 @@ public class MainWindow {
         for(int i = 0; i < statuses.size(); i++){
             dataToSave.put(statuses.get(i), stageTables.get(i));
         }
-        parser.save(fileName, dataToSave);
+        parser.save(fileName, nonDeterministic, numberOfLines, dataToSave);
     }
 
     /**
@@ -573,16 +574,19 @@ public class MainWindow {
      */
     private void load(){
         Parser parser = new Parser();
-        HashMap<String, JTable> dataToLoad = parser.load(fileName);
+        DataWrapper dataToLoad = parser.load(fileName);
+        nonDeterministic = dataToLoad.isBoolValue();
+        numberOfLines = dataToLoad.getIntValue();
         statuses.clear();
         statusDropdown.removeAllItems();
         stageTables.clear();
         stagePanelContainer.removeAll();
-        for(String status : dataToLoad.keySet()){
+        HashMap<String, JTable> data = dataToLoad.getTables();
+        for(String status : data.keySet()){
             statuses.add(status);
             statusDropdown.addItem(status);
             addStatus(statuses.size() - 1, status);
-            stageTables.add(dataToLoad.get(status));
+            stageTables.add(data.get(status));
             JScrollPane scrollPane = new JScrollPane(stageTables.get(stageTables.size() - 1));
             stagePanelContainer.add(scrollPane, status);
         }
