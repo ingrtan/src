@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import Data.Status;
 
 public class StatusSaver {
+    /**
+     * Saves the statuses to a file
+     * @param statusList
+     * @param fileName
+     */
     public static void saveStatusToFile(ArrayList<Status> statusList, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (Status status : statusList) {

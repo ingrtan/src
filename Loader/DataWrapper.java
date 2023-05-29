@@ -12,6 +12,12 @@ public class DataWrapper implements Serializable {
         private ArrayList<String> names;
         private ArrayList<SerializableTable> tables;
 
+        /**
+         * Constructor for DataWrapper
+         * @param boolValue
+         * @param intValue
+         * @param jTableHashMap
+         */
         public DataWrapper(boolean boolValue, int intValue, HashMap<String, JTable> jTableHashMap) {
             this.boolValue = boolValue;
             this.intValue = intValue;
@@ -21,14 +27,26 @@ public class DataWrapper implements Serializable {
             jTableHashMap.forEach((key, value) -> this.names.add(key));
         }
 
+        /**
+         * Returns the boolean value
+         * @return
+         */
         public boolean isBoolValue() {
             return boolValue;
         }
 
+        /**
+         * Returns the int value
+         * @return
+         */
         public int getIntValue() {
             return intValue;
         }
 
+        /**
+         * Returns the tables as a HashMap
+         * @return
+         */
         public HashMap<String, JTable> getTables() {
             HashMap<String, JTable> jTableHashMap = new HashMap<>();
             for(int i = this.tables.size()-1; i >= 0; i--){
@@ -37,6 +55,9 @@ public class DataWrapper implements Serializable {
             return jTableHashMap;
         }
 
+        /**
+         * Returns the string representation of the DataWrapper
+         */
         public String toString(){
             StringBuilder returningValue = new StringBuilder();
             returningValue.append("boolValue: ").append(this.boolValue).append("\nintValue: ").append(this.intValue).append("\n");

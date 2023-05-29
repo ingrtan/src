@@ -649,6 +649,9 @@ public class MainWindow {
         private JTextField statusField;
         private JButton addButton;
 
+        /**
+         * Creates a new AddStatusWindow.
+         */
         public AddStatusWindow() {
             super("Add Status");
 
@@ -697,6 +700,9 @@ public class MainWindow {
         private JButton createButton;
         private JCheckBox deterministic;
 
+        /**
+         * Creates a new window.
+         */
         public NewWindow(){
             super("New");
             addWindowListener(new WindowAdapter() {
@@ -741,6 +747,10 @@ public class MainWindow {
         private static final long serialVersionUID = 1L;
         private JButton okButton;
 
+        /**
+         * Creates a new WrongTableWarning.
+         * @param message
+         */
         public WrongTableWarning(String message){
             super("Warning");
             addWindowListener(new WindowAdapter() {
@@ -777,6 +787,9 @@ public class MainWindow {
         private JTextField fileNameField;
         private JButton saveButton;
 
+        /**
+         * Creates a new SaveWindow.
+         */
         public SaveWindow(){
             super("Save");
             addWindowListener(new WindowAdapter() {
@@ -819,6 +832,9 @@ public class MainWindow {
         private JTextField fileNameField;
         private JButton loadButton;
 
+        /**
+         * Constructor.
+         */
         public LoadWindow(){
             super("Load");
             addWindowListener(new WindowAdapter() {

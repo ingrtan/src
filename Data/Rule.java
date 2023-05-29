@@ -9,6 +9,13 @@ public class Rule {
     private Status next_state;
 
 
+    /**
+     * Constructor for Rule
+     * @param sign
+     * @param write
+     * @param direction
+     * @param next_state
+     */
     public Rule(String sign, String write, Movement direction, Status next_state){
         this.sign = sign;
         this.write = write;
@@ -16,22 +23,41 @@ public class Rule {
         this.next_state = next_state;
     }
 
+    /**
+     * Returns the sign of the rule
+     * @return
+     */
     public String getSign() {
         return sign;
     }
 
+    /**
+     * Returns the write of the rule
+     * @return
+     */
     public String getWrite() {
         return write;
     }
 
+    /**
+     * Returns the direction of the rule
+     * @return
+     */
     public Movement getDirection() {
         return direction;
     }
 
+    /**
+     * Returns the next state of the rule
+     * @return
+     */
     public Status getNext_state() {
         return next_state;
     }
 
+    /**
+     * Returns the rule as a string
+     */
     public String toString(){
         try {
             return sign + "," + write + "," + direction + "," + next_state.getName();

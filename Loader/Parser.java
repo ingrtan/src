@@ -16,6 +16,13 @@ import java.util.HashMap;
 
 public class Parser {
 
+    /**
+     * Saves the data to the given file
+     * @param fileName
+     * @param boolValue
+     * @param intValue
+     * @param tables
+     */
     public void save(String fileName, boolean boolValue, int intValue, HashMap<String, JTable> tables) {
         
         try {
@@ -31,6 +38,11 @@ public class Parser {
         }
     }
 
+    /**
+     * Loads the data from the given file
+     * @param fileName
+     * @return
+     */
     public DataWrapper load(String fileName) {
         try {
             FileInputStream fileIn = new FileInputStream(fileName);

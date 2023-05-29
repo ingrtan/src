@@ -9,7 +9,10 @@ public class SerializableTable implements Serializable{
     private Object[][] data;
     private Object[] columnNames;
 
-    // Construct from a JTable
+    /**
+     * Constructor for SerializableTable
+     * @param table
+     */
     public SerializableTable(JTable table) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         int rowCount = model.getRowCount();
@@ -28,10 +31,17 @@ public class SerializableTable implements Serializable{
         }
     }
 
+    /**
+     * Returns the SerializableTable as a JTable
+     * @return
+     */
     public JTable toJTable() {
         return new JTable(new DefaultTableModel(data, columnNames));
     }
 
+    /**
+     * Returns the string representation of the SerializableTable
+     */
     public String toString(){
         return "data: " + this.data.toString() + "\ncolumnNames: " + this.columnNames.toString();
     }
