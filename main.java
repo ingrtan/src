@@ -1,7 +1,14 @@
+import javax.swing.SwingUtilities;
+
 import Visuals.MainWindow;
 
 public class main {
     public static void main(String[] args){
-        MainWindow window = new MainWindow();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new MainWindow();
+            }
+        });
     }
+
 }

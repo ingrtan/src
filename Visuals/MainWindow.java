@@ -1,3 +1,4 @@
+
 package Visuals;
 
 import javax.swing.JButton;
@@ -9,38 +10,22 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-
-import Loader.DataWrapper;
-import Loader.Parser;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.HashMap;
-public class MainWindow {
+
+
+public class MainWindow extends JFrame{
     private JFrame mainFrame;
-    private JPanel mainPanel;
-    private JPanel containerPanel;
-    private JPanel buttonPanel;
-    private JPanel inputPanel;
-    private JPanel convertedPanel;
-    private JPanel runPanel;
-    private JButton inputButton;
-    private JButton convertedButton;
-    private JButton runButton;
-    private JTextArea inputField;
-    private JTextArea convertedField;
-    private JButton convertButton;
+    private JTextArea inputArea;
+    private JTextArea convertedArea;
     private NewWindow newWindow;
     private SaveWindow saveWindow;
     private LoadWindow loadWindow;
@@ -48,126 +33,69 @@ public class MainWindow {
     private int numberOfLines;
     private boolean nonDeterministic;
 
-    public MainWindow() {
-        inicilizeMainFrame();
-        initializeMenubar();
-        inicilizePanels();
-        inicilizButtons();
-        showFrame();
+    public MainWindow(){
+        initializeGUI();
     }
 
-    private void createNew(){
-        mainFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        mainFrame.setVisible(false);
-        mainFrame.dispose();
-        inicilizeMainFrame();
-        initializeMenubar();
-        inicilizePanels();
-        inicilizButtons();
-        showFrame();
+    private void initializeGUI() {
+        configureFrame();
+        mainFrame = this;
+        setJMenuBar(initializeMenubar());
+        JPanel converterPanel = createConverterPanel();
+        getContentPane().add(converterPanel);
+        setVisible(true);
     }
 
-    private void inicilizeMainFrame(){
-        mainFrame = new JFrame("Turing Simulator");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private void configureFrame() {
+        setTitle("Turing converter");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    private void inicilizePanels(){
-        mainPanel = new JPanel(new BorderLayout());
-        buttonPanel = new JPanel(new FlowLayout());
-        containerPanel = new JPanel(new CardLayout());
-        inputPanel = new JPanel(new BorderLayout());
-        convertedPanel = new JPanel(new BorderLayout());
-        runPanel = new JPanel(new BorderLayout());
-        inicilizeMainPanel();
-        inicilizeButtonPanel();
-        inicilizeInputPanel();
-        inicilizeConvertedPanel();
-        inicilizeRunPanel();
+    private JPanel createMainPanel(){
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new CardLayout());
+        return mainPanel;
     }
 
-    private void inicilizeMainPanel(){
-        mainFrame.add(mainPanel);
-        mainPanel.add(buttonPanel, BorderLayout.NORTH);
-        mainPanel.add(containerPanel, BorderLayout.CENTER);
+    private JPanel createConverterPanel() {
+        JPanel converterPanel = new JPanel();
+        converterPanel.setLayout(new BorderLayout());
+
+        JSplitPane splitPane = createSplitPane();
+        JPanel buttonPanel = createButtonPanel();
+
+        converterPanel.add(splitPane, BorderLayout.CENTER);
+        converterPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        return converterPanel;
     }
 
-    private void inicilizeButtonPanel(){
-        inputButton = new JButton("Input");
-        convertedButton = new JButton("Converted");
-        runButton = new JButton("Run");
-        buttonPanel.add(inputButton);
-        buttonPanel.add(convertedButton);
-        buttonPanel.add(runButton);
+    private JSplitPane createSplitPane() {
+        inputArea = new JTextArea();
+        convertedArea = new JTextArea();
+
+        JScrollPane leftScrollPane = new JScrollPane(inputArea);
+        JScrollPane rightScrollPane = new JScrollPane(convertedArea);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
+        splitPane.setResizeWeight(0.5);
+
+        return splitPane;
     }
 
-    private void inicilizeInputPanel(){
-        inputField = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(inputField);
-        scrollPane.setBounds(10,60,780,500);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        inputPanel.add(scrollPane, BorderLayout.CENTER);
-        containerPanel.add(inputPanel, "input");
-    }
-
-    private void inicilizeConvertedPanel(){
-        convertedField = new JTextArea();
-        JScrollPane scrollPane = new JScrollPane(convertedField);
-        scrollPane.setBounds(10,60,780,500);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        inicilizeConvertButton();
-        convertedPanel.add(convertButton, BorderLayout.NORTH);
-        convertedPanel.add(scrollPane, BorderLayout.CENTER);
-        containerPanel.add(convertedPanel, "converted");
-    }
-
-    private void inicilizeConvertButton(){
-        convertButton = new JButton("Convert");
-        
-    }
-
-    private void inicilizeRunPanel(){
-        containerPanel.add(runPanel, "run");
-    }
-
-    private void showFrame(){
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        mainFrame.setSize(screenSize);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
-    }
-
-    private void inicilizButtons(){
-        inicilizeInputButton();
-        inicilizeConvertedButton();
-        inicilizeRunButton();
-    }
-
-    private void inicilizeInputButton(){
-        inputButton.addActionListener(new ActionListener() {
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton copyButton = new JButton("Copy Text");
+        copyButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) containerPanel.getLayout();
-                cardLayout.show(containerPanel, "input");
+                convertedArea.setText(inputArea.getText());
             }
         });
-    }
-
-    private void inicilizeConvertedButton(){
-        convertedButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) containerPanel.getLayout();
-                cardLayout.show(containerPanel, "converted");
-            }
-        });
-    }
-
-    private void inicilizeRunButton(){
-        runButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) containerPanel.getLayout();
-                cardLayout.show(containerPanel, "run");
-            }
-        });
+        buttonPanel.add(copyButton);
+        return buttonPanel;
     }
 
     /**
@@ -182,7 +110,7 @@ public class MainWindow {
     private void load(){
     }
 
-    private void initializeMenubar() {
+    private JMenuBar initializeMenubar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenuItem newMenuItem = new JMenuItem("New");
@@ -226,7 +154,7 @@ public class MainWindow {
         fileMenu.add(loadMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
-        mainFrame.setJMenuBar(menuBar);
+        return menuBar;
     }
 
     /**
@@ -259,7 +187,7 @@ public class MainWindow {
                     setVisible(false);
                     nonDeterministic = deterministic.isSelected();
                     numberOfLinesField.setText("");
-                    createNew();
+                    //createNew();
                 }
             });
             JPanel panel = new JPanel(new FlowLayout());

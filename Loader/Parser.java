@@ -1,17 +1,12 @@
 package Loader;
 
 import javax.swing.JTable;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Parser {
@@ -59,5 +54,39 @@ public class Parser {
             System.out.println("An error occurred while loading the data: " + e.getMessage());
             return null;
         }
+    }
+
+    private Rules[] textToRules (String text){
+        String[] lines = text.split("\n");
+        Integer numberOfTapes = Integer.parseInt(lines[0].split(":")[1]);
+        ArrayList<Rules> rules = new ArrayList<>();
+        for(int i = 1; i < lines.length; i+=numberOfTapes+3){
+            String state = lines[i];
+            String stateToMove = lines[i+1];
+            String[] symbolToRead = new String[numberOfTapes];
+            String[] symbolToWrite = new String[numberOfTapes];
+            String[] direction = new String[numberOfTapes];
+            for(int j = 0; j < numberOfTapes; j++){
+                symbolToRead[j] = lines[i+2+j].split(";")[0];
+                symbolToWrite[j] = lines[i+2+j].split(";")[1];
+                direction[j] = lines[i+2+j].split(";")[2];
+            }
+            rules.add(new Rules(state, stateToMove, symbolToRead, symbolToWrite, direction));
+        }
+        return rules.toArray(new Rules[rules.size()]);
+    }
+
+    public HashMap<String, JTable> textToJTableHashMap(String text){
+        Rules[] rules = textToRules(text);
+        HashMap<String, RuleMatrix> ruleMatrixHashMap = new HashMap<>();
+        for(int i = 0; i < rules.length; i++){
+            if(!ruleMatrixHashMap.containsKey(rules[i].getState())){
+                ruleMatrixHashMap.put(rules[i].getState(), new RuleMatrix());
+            }
+            ruleMatrixHashMap.get(rules[i].getState()).addRow(rules[i].getStateToMove(), rules[i].getSymbolToRead(), rules[i].getSymbolToWrite(), rules[i].getDirection());
+        }
+        HashMap<String, JTable> jTableHashMap = new HashMap<>();
+        ruleMatrixHashMap.forEach((key, value) -> jTableHashMap.put(key, value.toJTable()));
+        return jTableHashMap;
     }
 }
