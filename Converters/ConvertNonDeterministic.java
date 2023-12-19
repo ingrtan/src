@@ -35,7 +35,8 @@ public class ConvertNonDeterministic extends ConverterMultiTread{
     }
 
     @Override
-    public Head convert(ArrayList<JTable> tables, ArrayList<String> statusList, int threadCount) throws WrongTableException{
+    public Head convert(ArrayList<JTable> tables, ArrayList<String> statusList) throws WrongTableException{
+        int threadCount = tables.get(0).getColumnCount();
         this.tables = tables;
         this.statusList = statusList;
         this.threadCount = threadCount;

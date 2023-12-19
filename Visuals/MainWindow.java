@@ -11,8 +11,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import Converters.ConvertNonDeterministic;
+import Converters.ConverterMultiTread;
+import Data.Head;
+import Loader.Parser;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
@@ -20,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainWindow extends JFrame{
@@ -32,6 +41,7 @@ public class MainWindow extends JFrame{
     private String fileName;
     private int numberOfLines;
     private boolean nonDeterministic;
+    private Head head;
 
     public MainWindow(){
         initializeGUI();
@@ -87,11 +97,26 @@ public class MainWindow extends JFrame{
 
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton copyButton = new JButton("Copy Text");
+        JButton copyButton = new JButton("Convert");
         copyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                convertedArea.setText(inputArea.getText());
+                Parser parser = new Parser();
+                HashMap<String, JTable> hashMap = new HashMap<>();
+                hashMap = parser.textToJTableHashMap(inputArea.getText());
+                if(nonDeterministic){
+                    try{
+                        head = new ConvertNonDeterministic().convert(new ArrayList<>(hashMap.values()), new ArrayList<>(hashMap.keySet()));
+                    }catch(Exception exception){
+                    }
+                }else{
+                    try{
+                        head = new ConverterMultiTread().convert(new ArrayList<>(hashMap.values()), new ArrayList<>(hashMap.keySet()));
+                    }catch(Exception exception){
+                        System.out.println(exception.getStackTrace());
+                    }
+                }
+                convertedArea.setText(head.toString());
             }
         });
         buttonPanel.add(copyButton);

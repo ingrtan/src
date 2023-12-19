@@ -41,7 +41,10 @@ public class ConverterMultiTread {
      * @return The list of Status objects.
      * @throws WrongTableException If the tables are invalid.
     */
-    public Head convert(ArrayList<JTable> tables, ArrayList<String> statusList, int threadCount) throws WrongTableException{
+    public Head convert(ArrayList<JTable> tables, ArrayList<String> statusList) throws WrongTableException{
+        int threadCount = tables.get(0).getColumnCount();
+        threadCount = threadCount-1;
+        threadCount = threadCount/3;
         this.tables = tables;
         this.statusList = statusList;
         this.threadCount = threadCount;
@@ -649,7 +652,7 @@ public class ConverterMultiTread {
     protected Object[][] getTableData (JTable table) {
         if (table.isEditing()) {
             table.getCellEditor().stopCellEditing();
-         }
+        }
         TableModel dtm = table.getModel();
         int nRow = dtm.getRowCount(), nCol = dtm.getColumnCount();
         Object[][] tableData = new Object[nRow][nCol];

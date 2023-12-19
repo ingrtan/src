@@ -31,13 +31,16 @@ public class RuleMatrix {
     }
 
     public void addRow(String stateToMove, String[] symbolToRead, String[] symbolToWrite, String[] direction){
-        ArrayList<String> row = new ArrayList<>();
+        ArrayList<String> row = new ArrayList<String>();
         row.add(stateToMove);
         for(int i = 0; i < symbolToRead.length; i++){
             row.add(symbolToRead[i]);
             row.add(symbolToWrite[i]);
             row.add(direction[i]);
         }
+        String[] arr = new String[row.size()];
+        arr = row.toArray(arr);
+        this.matrix.add(arr);
     }
 
     public JTable toJTable(){
@@ -50,5 +53,17 @@ public class RuleMatrix {
             data[i] = this.matrix.get(i);
         }
         return new JTable(data, columnNames);
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i<matrix.size();i++){
+            for(int j = 0; j<matrix.get(i).length;j++){
+                sb.append(matrix.get(i)[j]);
+                sb.append(", ");
+            }
+            sb.append("/n");
+        }
+        return sb.toString();
     }
 }
