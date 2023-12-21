@@ -19,6 +19,7 @@ import Converters.ConvertNonDeterministic;
 import Converters.ConverterMultiTread;
 import Data.Head;
 import Loader.Parser;
+import Loader.RuleMatrix;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -102,8 +103,8 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Parser parser = new Parser();
-                HashMap<String, JTable> hashMap = new HashMap<>();
-                hashMap = parser.textToJTableHashMap(inputArea.getText());
+                HashMap<String, RuleMatrix> hashMap = new HashMap<>();
+                hashMap = parser.textToJData(inputArea.getText());
                 if(nonDeterministic){
                     try{
                         head = new ConvertNonDeterministic().convert(new ArrayList<>(hashMap.values()), new ArrayList<>(hashMap.keySet()));

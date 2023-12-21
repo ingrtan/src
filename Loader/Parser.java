@@ -97,7 +97,7 @@ public class Parser {
      * Pite;Pite
      * a;a;Left
      */
-    public HashMap<String, JTable> textToJTableHashMap(String text){
+    public HashMap<String, RuleMatrix> textToJData(String text){
         Rules[] rules = textToRules(text);
         HashMap<String, RuleMatrix> ruleMatrixHashMap = new HashMap<>();
         for(int i = 0; i < rules.length; i++){
@@ -110,7 +110,6 @@ public class Parser {
         for (Map.Entry<String, RuleMatrix> entry : ruleMatrixHashMap.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue().toString());
         }
-        ruleMatrixHashMap.forEach((key, value) -> jTableHashMap.put(key, value.toJTable()));
-        return jTableHashMap;
+        return ruleMatrixHashMap;
     }
 }

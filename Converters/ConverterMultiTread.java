@@ -1,31 +1,32 @@
 package Converters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import Data.Head;
 import Data.Rule;
 import Data.Status;
+import Loader.DataWrapper;
+import Loader.RuleMatrix;
 import Resources.Movement;
 import Resources.WrongTableException;
  
 public class ConverterMultiTread {
     protected int threadCount = 0;
-    protected ArrayList<String> statusList = new ArrayList<>();
     protected ArrayList<Status> choosableStatuses = new ArrayList<>();
     protected ArrayList<Status> moveStarterStatuses = new ArrayList<>();
-    protected ArrayList<JTable> tables = new ArrayList<JTable>();
     protected ArrayList<Object[][]> tablesData = new ArrayList<>();
     protected int columnNumber;
     protected ArrayList<ArrayList<String>> columnData = new ArrayList<>();
     protected Status chooserStatus = new Status("Chooser");;
     protected Status moveToMostLeft = new Status("MoveToMostLeft");
     protected ArrayList<ArrayList<String>> combinations = new ArrayList<>();
+    protected HashMap<String,RuleMatrix> ruleMap;
     protected ArrayList<Status> statuses = new ArrayList<>();
     protected Head head;
     /**
@@ -41,14 +42,11 @@ public class ConverterMultiTread {
      * @return The list of Status objects.
      * @throws WrongTableException If the tables are invalid.
     */
-    public Head convert(ArrayList<JTable> tables, ArrayList<String> statusList) throws WrongTableException{
-        int threadCount = tables.get(0).getColumnCount();
+    public Head convert(HashMap<String,RuleMatrix> ruleMap) throws WrongTableException{
         threadCount = threadCount-1;
         threadCount = threadCount/3;
-        this.tables = tables;
-        this.statusList = statusList;
+        this.ruleMap = ruleMap;
         this.threadCount = threadCount;
-        columnNumber = tables.get(0).getColumnCount();
         getDataFromTables();
         if(isThereWrongMovement()){
             throw new WrongTableException("Wrong Movement.");
