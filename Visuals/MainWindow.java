@@ -11,16 +11,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import Converters.ConvertNonDeterministic;
-import Converters.ConverterMultiTread;
 import Data.Head;
-import Loader.Parser;
-import Loader.RuleMatrix;
-
+import Converters.MultiTape;
+import Converters.NonDetermenistic;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
@@ -32,6 +27,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
+/**
+ * The main window of the application.
+ */
 public class MainWindow extends JFrame{
     private JFrame mainFrame;
     private JTextArea inputArea;
@@ -44,10 +42,16 @@ public class MainWindow extends JFrame{
     private boolean nonDeterministic;
     private Head head;
 
+    /**
+     * Constructor.
+     */
     public MainWindow(){
         initializeGUI();
     }
 
+    /**
+     * Initializes the GUI.
+     */
     private void initializeGUI() {
         configureFrame();
         mainFrame = this;
@@ -57,6 +61,9 @@ public class MainWindow extends JFrame{
         setVisible(true);
     }
 
+    /**
+     * Configures the frame.
+     */
     private void configureFrame() {
         setTitle("Turing converter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,12 +71,20 @@ public class MainWindow extends JFrame{
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
+    /**
+     * Creates the main panel.
+     * @return
+     */
     private JPanel createMainPanel(){
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new CardLayout());
         return mainPanel;
     }
 
+    /**
+     * Creates the converter panel.
+     * @return
+     */
     private JPanel createConverterPanel() {
         JPanel converterPanel = new JPanel();
         converterPanel.setLayout(new BorderLayout());
@@ -83,6 +98,10 @@ public class MainWindow extends JFrame{
         return converterPanel;
     }
 
+    /**
+     * Creates the split pane.
+     * @return
+     */
     private JSplitPane createSplitPane() {
         inputArea = new JTextArea();
         convertedArea = new JTextArea();
@@ -96,28 +115,29 @@ public class MainWindow extends JFrame{
         return splitPane;
     }
 
+    /**
+     * Creates the button panel.
+     * @return
+     */
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton copyButton = new JButton("Convert");
         copyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Parser parser = new Parser();
-                HashMap<String, RuleMatrix> hashMap = new HashMap<>();
-                hashMap = parser.textToJData(inputArea.getText());
                 if(nonDeterministic){
-                    try{
-                        head = new ConvertNonDeterministic().convert(new ArrayList<>(hashMap.values()), new ArrayList<>(hashMap.keySet()));
-                    }catch(Exception exception){
-                    }
+                    new NonDetermenistic(inputArea.getText());
+                    NonDetermenistic nonDetermenistic = new NonDetermenistic(inputArea.getText());
+                    nonDetermenistic.convert();
+                    head = nonDetermenistic.getHead();
+                    convertedArea.setText(nonDetermenistic.getOutput());
                 }else{
-                    try{
-                        head = new ConverterMultiTread().convert(new ArrayList<>(hashMap.values()), new ArrayList<>(hashMap.keySet()));
-                    }catch(Exception exception){
-                        System.out.println(exception.getStackTrace());
-                    }
+                    new MultiTape(inputArea.getText());
+                    MultiTape multiTape = new MultiTape(inputArea.getText());
+                    multiTape.convert();
+                    head = multiTape.getHead();
+                    convertedArea.setText(multiTape.getOutput());
                 }
-                convertedArea.setText(head.toString());
             }
         });
         buttonPanel.add(copyButton);
