@@ -37,7 +37,14 @@ public class MultiTape {
             }
         }
         statuses = new ArrayList<Status>();
+        startStatus = new Status("start");
+        statuses.add(startStatus);
         createSetupRules();
+        createPushingRules();
+        createReadingRules();
+        createMovingRules();
+        createWritingRules();
+        head = new Head(startStatus);
     }
 
     private void parse(){
@@ -75,27 +82,43 @@ public class MultiTape {
         for(String character : alphabet){
             goBackStatus.addRule(new Rule(character, character, Movement.LEFT, goBackStatus));
         }
+        Status startCheckStatus = new Status("startCheck");
         goBackStatus.addRule(new Rule("#", "#", Movement.LEFT, setupStatuses.get(0)));
         goBackStatus.addRule(new Rule("*", "*", Movement.LEFT, goBackStatus));
-        goBackStatus.addRule(new Rule(" ", " ", Movement.RIGHT, startStatus));
+        goBackStatus.addRule(new Rule(" ", " ", Movement.RIGHT, startCheckStatus));
+        for(String character : alphabet){
+            startCheckStatus.addRule(new Rule(character, character, Movement.STAY, startStatus));
+        }
+        startCheckStatus.addRule(new Rule(" ", "*", Movement.STAY, startStatus));
         statuses.addAll(setupStatuses);
         statuses.add(goBackStatus);
+        statuses.add(startCheckStatus);
     }
 
     private void createPushingRules(){
+        for(ParsedRule rule : inputRules){
+            
+        }
 
     }
 
     private void createReadingRules(){
+        for(ParsedRule rule : inputRules){
+            
+        }
 
     }
 
     private void createMovingRules(){
-
+        for(ParsedRule rule : inputRules){
+            
+        }
     }
 
     private void createWritingRules(){
-
+        for(ParsedRule rule : inputRules){
+            
+        }
     }
 
     public Head getHead() {
