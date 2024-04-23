@@ -5,6 +5,7 @@ public class ParsedRule {
     private String[] read;
     private String[] write;
     private String[] move;
+    private String stateGoTo;
     private boolean accept = false;
 
     public ParsedRule() {
@@ -24,6 +25,10 @@ public class ParsedRule {
 
     public void setMove(String[] move) {
         this.move = move;
+    }
+
+    public void setStateGoTo(String stateGoTo) {
+        this.stateGoTo = stateGoTo;
     }
 
     public void setAccept(boolean accept) {
@@ -52,6 +57,10 @@ public class ParsedRule {
 
     public String[] getMove() {
         return move;
+    }
+
+    public String getStateGoTo() {
+        return stateGoTo;
     }
 
     public boolean isAccept() {

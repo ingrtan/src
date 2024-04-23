@@ -14,31 +14,42 @@ public class Parser {
     }
 
     private void parse() {
-        //split input into lines
+        // split input into lines
         String[] lines = input.split("\n");
-        //group lines into states
+        // group lines into states
         int i = 0;
         ParsedRule rule = new ParsedRule();
         for (String line : lines) {
-            if(i == 0) {
-                String state = line.split(":")[0];
-                if(!states.contains(state)) {
-                    states.add(state);
-                }
-                rule = new ParsedRule();
-                rule.setState(state);
-            } else if(i == 1) {
-                String[] parts = line.split(";");
-                for (String part : parts) {
-                    if(!alphabet.contains(part)) {
-                        alphabet.add(part);
+            if (!line.equals("")) {
+                i++;
+            } else {
+                i = 0;
+                continue;
+            }
+            if (line.equals("accept")) {
+                rule.setAccept(true);
+                rules.add(rule);
+                i = 0;
+            } else {
+                if (i == 0) {
+                    String state = line.split(":")[0];
+                    if (!states.contains(state)) {
+                        states.add(state);
                     }
-                }
-                rule.setRead(parts);
-            } else if(i == 2) {
-                if(line.equals("accept")) {
-                    rule.setAccept(true);
-                } else {
+                    rule = new ParsedRule();
+                    rule.setState(state);
+                } else if (i == 1) {
+                    String[] parts = line.split(";");
+                    for (String part : parts) {
+                        if (!alphabet.contains(part)) {
+                            alphabet.add(part);
+                        }
+                    }
+                    rule.setRead(parts);
+                } else if (i == 2) {
+                    String stateGoTo = line.split(":")[0];
+                    rule.setStateGoTo(stateGoTo);
+                } else if (i == 3) {
                     rule.setAccept(false);
                     String[] parts = line.split(";");
                     int half = parts.length / 2;
@@ -47,24 +58,18 @@ public class Parser {
                     boolean writePart = true;
                     int k = 0;
                     for (int j = 0; j < parts.length; j++) {
-                    if(writePart) {
-                        write[k] = parts[j];
-                    } else {
-                        move[k] = parts[j];
-                        k++;
+                        if (writePart) {
+                            write[k] = parts[j];
+                        } else {
+                            move[k] = parts[j];
+                            k++;
+                        }
+                        writePart = !writePart;
                     }
-                    writePart = !writePart;
-                } 
-                }                               
-            } else {
-                rules.add(rule);
-                i=-1;
-            }
-            //check if line is empty
-            if(!line.equals("")) {
-                i++;   
-            }else {
-                i = 0;
+                } else {
+                    rules.add(rule);
+                    i = 0;
+                }
             }
         }
     }
