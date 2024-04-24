@@ -210,7 +210,7 @@ public class MultiTape {
     }
 
     private void createControlStatus(){
-
+        controlStatus = new Status("control");
     }
 
     private void createStatuses(){
