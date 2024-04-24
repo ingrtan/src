@@ -8,6 +8,7 @@ public class Parser {
     private ArrayList<ParsedRule> rules = new ArrayList<ParsedRule>();
     private ArrayList<String> alphabet = new ArrayList<String>();
 
+
     public Parser(String input) {
         this.input = input;
         parse();

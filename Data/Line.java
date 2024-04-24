@@ -13,7 +13,7 @@ public class Line {
      * Constructor for Line
      */
     public Line(){
-        data = "Blank";
+        data = " ";
     }
 
     /**
@@ -37,7 +37,7 @@ public class Line {
      * @return
      */
     public boolean isEmpty(){
-        if(data.equals("Blank")){
+        if(data.equals(" ")){
             return true;
         }else{
             return false;
@@ -83,13 +83,13 @@ public class Line {
         try{
             result.add(left.toString());
         }catch (NullPointerException e){
-            result.add("Blank");
+            result.add(" ");
         }
         result.add(data);
         try{
             result.add(right.toString());
         }catch (NullPointerException e){
-            result.add("Blank");
+            result.add(" ");
         }
         return result;
     }

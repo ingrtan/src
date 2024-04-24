@@ -1,6 +1,9 @@
 package Converters;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import org.w3c.dom.Attr;
 
 import Data.Head;
 import Data.Rule;
@@ -14,9 +17,13 @@ public class MultiTape {
     private ArrayList<String> states;
     private ArrayList<String> alphabet;
     private ArrayList<ParsedRule> inputRules;
-    private int tapeLength;
+    private int tapeNumber;
     private ArrayList<Status> statuses;
     private Status startStatus;
+    private ArrayList<ParsedRule> acceptRules = new ArrayList<ParsedRule>();
+    private ArrayList<ParsedRule> nonAcceptRules = new ArrayList<ParsedRule>();
+    private Status acceptStatus;
+    private Status controlStatus;
 
 
     public MultiTape(String input) {
@@ -25,13 +32,13 @@ public class MultiTape {
 
     public void convert() {
         parse();
-        tapeLength = inputRules.get(0).getTapeLength();
+        tapeNumber = inputRules.get(0).getTapeLength();
         for (ParsedRule rule : inputRules) {
             if(!rule.validate()) {
                 output = "Invalid rule";
                 return;
             }
-            if(tapeLength != rule.getTapeLength()) {
+            if(tapeNumber != rule.getTapeLength()) {
                 output = "Invalid tape length";
                 return;
             }
@@ -40,10 +47,9 @@ public class MultiTape {
         startStatus = new Status("start");
         statuses.add(startStatus);
         createSetupRules();
-        createPushingRules();
-        createReadingRules();
-        createMovingRules();
-        createWritingRules();
+        splitRules();
+        createPushingRules(Movement.RIGHT);
+        createPushingRules(Movement.LEFT);
         head = new Head(startStatus);
     }
 
@@ -61,14 +67,14 @@ public class MultiTape {
         }
         ArrayList<Status> setupStatuses = new ArrayList<Status>();
         setupStatuses.add(startingStatus);
-        for(int i = 1; i < tapeLength; i++){
+        for(int i = 1; i < tapeNumber; i++){
             Status status = new Status("setup#" + i);
             setupStatuses.add(status);
             status = new Status("setup*" + i);
             setupStatuses.add(status);
         }
         boolean isHashtag = true;
-        for(int i = 0; i < tapeLength - 1; i++){
+        for(int i = 0; i < tapeNumber - 1; i++){
             if(isHashtag){
                 setupStatuses.get(i).addRule(new Rule(" ", "#", Movement.RIGHT, setupStatuses.get(i + 1)));
                 isHashtag = false;
@@ -95,29 +101,139 @@ public class MultiTape {
         statuses.add(startCheckStatus);
     }
 
-    private void createPushingRules(){
+    private void splitRules(){
         for(ParsedRule rule : inputRules){
-            
-        }
-
-    }
-
-    private void createReadingRules(){
-        for(ParsedRule rule : inputRules){
-            
-        }
-
-    }
-
-    private void createMovingRules(){
-        for(ParsedRule rule : inputRules){
-            
+            if(rule.isAccept()){
+                acceptRules.add(rule);
+            } else {
+                nonAcceptRules.add(rule);
+            }
         }
     }
 
-    private void createWritingRules(){
-        for(ParsedRule rule : inputRules){
-            
+    private void createPushingRules(Movement movement){
+        ArrayList<Status> pushingStatuses = new ArrayList<Status>();
+        ArrayList<Status> taggedPushingStatuses = new ArrayList<Status>();
+        for(String character : alphabet){
+            Status status = new Status("push#" + character);
+            pushingStatuses.add(status);
+            status = new Status("push*" + character);
+            taggedPushingStatuses.add(status);
+        }
+        for(int i = 0; i < alphabet.size(); i++){
+            for(int j = 0; j < alphabet.size(); j++){
+                pushingStatuses.get(i).addRule(new Rule(alphabet.get(j), alphabet.get(i), movement, pushingStatuses.get(j)));
+                taggedPushingStatuses.get(i).addRule(new Rule(alphabet.get(j), alphabet.get(i)+"*", movement, pushingStatuses.get(j)));
+                pushingStatuses.get(i).addRule(new Rule(alphabet.get(j)+"*", alphabet.get(i), movement, taggedPushingStatuses.get(j)));
+            }
+        }
+        Status hashtagPush = new Status("push#");
+        Status taggedPush = new Status("push*");
+        for(int i = 0; i < alphabet.size(); i++){
+            hashtagPush.addRule(new Rule(alphabet.get(i), "#", movement, pushingStatuses.get(i)));
+            taggedPush.addRule(new Rule(alphabet.get(i)+"*", "*", movement, taggedPushingStatuses.get(i)));
+            pushingStatuses.get(i).addRule(new Rule("#", alphabet.get(i), movement, hashtagPush));
+            pushingStatuses.get(i).addRule(new Rule("*", alphabet.get(i), movement, taggedPush));
+            pushingStatuses.get(i).addRule(new Rule(" ", alphabet.get(i), movement, controlStatus));
+            taggedPushingStatuses.get(i).addRule(new Rule("*", alphabet.get(i)+"*", movement, taggedPush));
+            taggedPushingStatuses.get(i).addRule(new Rule("#", alphabet.get(i)+"*", movement, hashtagPush));
+            taggedPushingStatuses.get(i).addRule(new Rule(" ", alphabet.get(i)+"*", movement, controlStatus));
+        }
+        hashtagPush.addRule(new Rule("#", "#", movement, hashtagPush));
+        hashtagPush.addRule(new Rule("*", "#", movement, taggedPush));
+        taggedPush.addRule(new Rule("*", "*", movement, taggedPush));
+        taggedPush.addRule(new Rule("#", "*", movement, hashtagPush));   
+        hashtagPush.addRule(new Rule(" ", "#", movement, controlStatus));
+        taggedPush.addRule(new Rule(" ", "*", movement, controlStatus));
+
+        statuses.addAll(pushingStatuses);
+        statuses.addAll(taggedPushingStatuses);
+        statuses.add(hashtagPush);
+        statuses.add(taggedPush);
+    }
+
+    private ArrayList<Status> createReadingStatuses(){
+        ArrayList<Status> readingStatuses = new ArrayList<Status>();
+        ArrayList<String> statusName = new ArrayList<String>();
+        ArrayList<String> statusNameInprogressTape = new ArrayList<String>();
+        ArrayList<String> statusNameLastTape = new ArrayList<String>();
+        for(int i = 0; i < tapeNumber; i++){
+            for(String character : alphabet){
+                for(String lastName : statusNameLastTape){
+                    statusNameInprogressTape.add(lastName + "#" + character);
+                }
+            }
+            statusNameLastTape = statusNameInprogressTape;
+            statusNameInprogressTape = new ArrayList<String>();
+            statusName.addAll(statusNameLastTape);
+        }
+        for(String status : states){
+            for(String name : statusName){
+                Status readingStatus = new Status("read#" + status + "#" + name);                
+                readingStatuses.add(readingStatus);
+            }
+            Status readingStatus = new Status("read#" + status);
+            readingStatuses.add(readingStatus);
+        }
+        for(Status status : readingStatuses){
+            for(String character : alphabet){
+                status.addRule(new Rule(character, character, Movement.RIGHT, status));
+                for(Status nextStatus : readingStatuses){
+                    if(nextStatus.getName().contains(status.getName() + "#" + character)){
+                        status.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, nextStatus));
+                    }
+                }
+            }
+            status.addRule(new Rule("#", "#", Movement.RIGHT, status));
+        }
+        return readingStatuses;
+    }
+
+    private ArrayList<Status> createMovingStatuses(){
+        ArrayList<Status> movingStatuses = new ArrayList<Status>();
+        for(String state : states){
+            Status status = new Status("move#" + state);
+            movingStatuses.add(status);
+        }
+        return movingStatuses;
+    }
+
+    private ArrayList<Status> createWritingStatuses(){
+        ArrayList<Status> writingStatuses = new ArrayList<Status>();
+        for(int i = 0; i <inputRules.size(); i++){
+            for(int j = 0; j < tapeNumber; j++){
+                Status status = new Status("write#" + i + "#" + j);
+                writingStatuses.add(status);
+            }
+        }
+        return writingStatuses;
+    }
+
+    private void createControlStatus(){
+
+    }
+
+    private void createStatuses(){
+        ArrayList<Status> readingStatuses = createReadingStatuses();
+        ArrayList<Status> movingStatuses = createMovingStatuses();
+        ArrayList<Status> writingStatuses = createWritingStatuses();
+        for(int i = 0; i <inputRules.size(); i++){
+            for(int j = 0; j < tapeNumber; j++){
+                ParsedRule rule = inputRules.get(i);
+                String read = rule.getRead()[j];
+                String write = rule.getWrite()[j];
+                Movement movement = convertMovement(rule.getMove()[j]);
+            }
+        }
+    }
+
+    private Movement convertMovement(String move){
+        if(move.equals(">")){
+            return Movement.RIGHT;
+        } else if(move.equals("<")){
+            return Movement.LEFT;
+        } else {
+            return Movement.STAY;
         }
     }
 
