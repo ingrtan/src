@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Status {
     private String name;
     private ArrayList<Rule> rules = new ArrayList<Rule>();
+    private boolean accept = false;
 
     /**
      * Constructor for Status
@@ -20,6 +21,13 @@ public class Status {
      */
     public void addRule(Rule rule){
         rules.add(rule);
+    }
+
+    /**
+     * Sets the status to accept
+     */
+    public void setAccept(){
+        accept = true;
     }
 
     /**
@@ -42,6 +50,22 @@ public class Status {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Returns the rules of the status
+     * @return
+     */
+    public ArrayList<Rule> getRules() {
+        return rules;
+    }
+
+    /**
+     * Returns if the status is accepting
+     * @return
+     */
+    public boolean isAccept() {
+        return accept;
     }
 
     /**

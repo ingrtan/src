@@ -200,11 +200,35 @@ public class MultiTape {
 
     private ArrayList<Status> createWritingStatuses(){
         ArrayList<Status> writingStatuses = new ArrayList<Status>();
+        ArrayList<Status> writerStatuses = new ArrayList<Status>();
         for(int i = 0; i <inputRules.size(); i++){
             for(int j = 0; j < tapeNumber; j++){
-                Status status = new Status("write#" + i + "#" + j);
+                Status status = new Status("write#"+ inputRules.get(i).getState() + "#" + i + "#" + j);
+                Status writerStatus = new Status("write#" + inputRules.get(i).getState() + "#" + i + "#" + j + "#writer");
+                if(inputRules.get(i).isAccept()){
+                    status.setAccept();
+                }else if(inputRules.get(i).getRead()[j].equals(" ")){
+                    if(inputRules.get(i).getWrite()[j].equals(" ")){
+                        status.addRule(new Rule("*", "*", convertMovement(inputRules.get(i).getMove()[j]), writerStatus));
+                    } else {
+                        status.addRule(new Rule("*", inputRules.get(i).getWrite()[j], convertMovement(inputRules.get(i).getMove()[j]), writerStatus));
+                    }
+                }else{
+                    if(inputRules.get(i).getWrite()[j].equals(" ")){
+                        status.addRule(new Rule(inputRules.get(i).getRead()[j], "*", convertMovement(inputRules.get(i).getMove()[j]), writerStatus));
+                    } else {
+                        status.addRule(new Rule(inputRules.get(i).getRead()[j], inputRules.get(i).getWrite()[j], convertMovement(inputRules.get(i).getMove()[j]), writerStatus));
+                    }
+                }
                 writingStatuses.add(status);
+                writerStatuses.add(writerStatus);
             }
+        }
+        for(Status status : writingStatuses){
+            for(String character : alphabet){
+                status.addRule(new Rule(character, character, Movement.RIGHT, status));
+            }
+            status.addRule(new Rule("#", "#", Movement.RIGHT, status));
         }
         return writingStatuses;
     }
@@ -217,14 +241,8 @@ public class MultiTape {
         ArrayList<Status> readingStatuses = createReadingStatuses();
         ArrayList<Status> movingStatuses = createMovingStatuses();
         ArrayList<Status> writingStatuses = createWritingStatuses();
-        for(int i = 0; i <inputRules.size(); i++){
-            for(int j = 0; j < tapeNumber; j++){
-                ParsedRule rule = inputRules.get(i);
-                String read = rule.getRead()[j];
-                String write = rule.getWrite()[j];
-                Movement movement = convertMovement(rule.getMove()[j]);
-            }
-        }
+        
+
     }
 
     private Movement convertMovement(String move){
