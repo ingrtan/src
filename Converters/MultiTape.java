@@ -30,6 +30,9 @@ public class MultiTape {
         this.input = input;
     }
 
+    /**
+     * Converts the input string to a Turing machine
+     */
     public void convert() {
         parse();
         tapeNumber = inputRules.get(0).getTapeLength();
@@ -53,6 +56,9 @@ public class MultiTape {
         head = new Head(startStatus);
     }
 
+    /**
+     * Parses the input string to get the states, alphabet and rules
+     */
     private void parse(){
         Parser parser = new Parser(input);
         states = parser.getStates();
@@ -60,6 +66,10 @@ public class MultiTape {
         inputRules = parser.getRules();
     }
     
+    /**
+     * Creates the setup rules for the Turing machine
+     * The setup rules are used to initialize the tapes
+     */
     private void createSetupRules(){
         Status startingStatus = new Status("startSetup");
         for(String character : alphabet){
@@ -101,6 +111,9 @@ public class MultiTape {
         statuses.add(startCheckStatus);
     }
 
+    /**
+     * Splits the rules into accept and non-accept rules
+     */
     private void splitRules(){
         for(ParsedRule rule : inputRules){
             if(rule.isAccept()){
@@ -111,6 +124,10 @@ public class MultiTape {
         }
     }
 
+    /**
+     * Creates the pushing rules for the Turing machine
+     * @param movement The movement of the head
+     */
     private void createPushingRules(Movement movement){
         ArrayList<Status> pushingStatuses = new ArrayList<Status>();
         ArrayList<Status> taggedPushingStatuses = new ArrayList<Status>();
@@ -152,6 +169,10 @@ public class MultiTape {
         statuses.add(taggedPush);
     }
 
+    /**
+     * Creates the reading statuses for the Turing machine
+     * @return The reading statuses
+     */
     private ArrayList<Status> createReadingStatuses(){
         ArrayList<Status> readingStatuses = new ArrayList<Status>();
         ArrayList<String> statusName = new ArrayList<String>();
@@ -189,6 +210,10 @@ public class MultiTape {
         return readingStatuses;
     }
 
+    /**
+     * Creates the moving statuses for the Turing machine
+     * @return The moving statuses
+     */
     private ArrayList<Status> createMovingStatuses(){
         ArrayList<Status> movingStatuses = new ArrayList<Status>();
         for(String state : states){
@@ -198,6 +223,10 @@ public class MultiTape {
         return movingStatuses;
     }
 
+    /**
+     * Creates the writing statuses for the Turing machine
+     * @return The writing statuses
+     */
     private ArrayList<Status> createWritingStatuses(){
         ArrayList<Status> writingStatuses = new ArrayList<Status>();
         ArrayList<Status> writerStatuses = new ArrayList<Status>();
@@ -233,6 +262,9 @@ public class MultiTape {
         return writingStatuses;
     }
 
+    /**
+     * Creates the control status for the Turing machine
+     */
     private void createControlStatus(){
         controlStatus = new Status("control");
     }
@@ -245,6 +277,11 @@ public class MultiTape {
 
     }
 
+    /**
+     * Converts the movement string to a Movement object
+     * @param move The movement string
+     * @return The Movement object
+     */
     private Movement convertMovement(String move){
         if(move.equals(">")){
             return Movement.RIGHT;
