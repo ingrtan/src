@@ -253,45 +253,6 @@ public class MainWindow extends JFrame{
     }
 
     /**
-     * A window which warns the user that the table is wrong.
-     */
-    private class WrongTableWarning extends JFrame{
-        private static final long serialVersionUID = 1L;
-        private JButton okButton;
-
-        /**
-         * Creates a new WrongTableWarning.
-         * @param message
-         */
-        public WrongTableWarning(String message){
-            super("Warning");
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    mainFrame.setEnabled(true);
-                }
-            });
-            okButton = new JButton("OK");
-            okButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    mainFrame.setEnabled(true);
-                    setVisible(false);
-                }
-            });
-            JPanel panel = new JPanel(new FlowLayout());
-            panel.add(new JLabel(message));
-            panel.add(okButton);
-            add(panel);
-
-            // Set window properties
-            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            pack();
-            setLocationRelativeTo(mainFrame);
-            setResizable(false);
-        }
-    }
-
-    /**
      * A window which used to save the Turing Machine.
      */
     private class SaveWindow extends JFrame{

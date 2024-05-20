@@ -21,9 +21,7 @@ public class Parser {
         int i = 0;
         ParsedRule rule = new ParsedRule();
         for (String line : lines) {
-            if (!line.equals("")) {
-                i++;
-            } else {
+            if (line.equals("")) {
                 i = 0;
                 continue;
             }
@@ -32,44 +30,27 @@ public class Parser {
                 rules.add(rule);
                 i = 0;
             } else {
-                if (i == 0) {
-                    String state = line.split(":")[0];
-                    if (!states.contains(state)) {
-                        states.add(state);
-                    }
+                if (i==0){
                     rule = new ParsedRule();
-                    rule.setState(state);
-                } else if (i == 1) {
-                    String[] parts = line.split(";");
-                    for (String part : parts) {
-                        if (!alphabet.contains(part)) {
-                            alphabet.add(part);
-                        }
-                    }
-                    rule.setRead(parts);
-                } else if (i == 2) {
-                    String stateGoTo = line.split(":")[0];
-                    rule.setStateGoTo(stateGoTo);
-                } else if (i == 3) {
-                    rule.setAccept(false);
-                    String[] parts = line.split(";");
-                    int half = parts.length / 2;
-                    String[] write = new String[half];
-                    String[] move = new String[half];
-                    boolean writePart = true;
-                    int k = 0;
-                    for (int j = 0; j < parts.length; j++) {
-                        if (writePart) {
-                            write[k] = parts[j];
-                        } else {
-                            move[k] = parts[j];
-                            k++;
-                        }
-                        writePart = !writePart;
-                    }
+                    rule.setState(line.split(": ")[0]);
+                    rule.setRead(line.split(": ")[1].split(";"));
+                    i++;
                 } else {
+                    rule.setStateGoTo(line.split(": ")[0]);
+                    rule.setWrite(line.split(": ")[1].split(";"));
+                    rule.setMove(line.split(": ")[2].split(";"));
                     rules.add(rule);
                     i = 0;
+                }
+                String state = line.split(": ")[0];
+                if (!states.contains(state)) {
+                    states.add(state);
+                }
+                String[] parts = line.split(": ")[1].split(";");
+                for (String part : parts) {
+                    if (!alphabet.contains(part)) {
+                        alphabet.add(part);
+                    }
                 }
             }
         }

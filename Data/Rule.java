@@ -65,4 +65,8 @@ public class Rule {
             return sign + "," + write + "," + direction + "," + "null";
         }
     }
+
+    public String getWrintingParts(){
+        return next_state.getName() + ": " +write + ": " + direction;
+    }
 }

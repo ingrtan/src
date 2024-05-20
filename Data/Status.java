@@ -73,10 +73,12 @@ public class Status {
      * @return
      */
     public String toString(){
-        String result = name + "\n";
+        StringBuilder result = new StringBuilder();
         for(Rule r:rules){
-            result += r.toString() + "\n";
+            result.append(name + ":");
+            result.append(r.getSign() + "\n");
+            result.append(r.getWrintingParts() + "\n");
         }
-        return result;
+        return result.toString();
     }
 }

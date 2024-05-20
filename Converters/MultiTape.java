@@ -1,9 +1,6 @@
 package Converters;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import org.w3c.dom.Attr;
 
 import Data.Head;
 import Data.Rule;
@@ -35,6 +32,10 @@ public class MultiTape {
      */
     public void convert() {
         parse();
+        if(states.isEmpty()) {
+            output = "Empty input";
+            return;
+        }
         tapeNumber = inputRules.get(0).getTapeLength();
         for (ParsedRule rule : inputRules) {
             if(!rule.validate()) {
@@ -52,6 +53,13 @@ public class MultiTape {
         createSetupRules();
         splitRules();
         head = new Head(startStatus);
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append("tapes:" + tapeNumber);
+        for(Status status : statuses){
+            outputBuilder.append(status.toString());
+            outputBuilder.append("\n");
+        }
+        output = outputBuilder.toString();
     }
 
     /**
