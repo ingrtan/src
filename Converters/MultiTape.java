@@ -51,8 +51,6 @@ public class MultiTape {
         statuses.add(startStatus);
         createSetupRules();
         splitRules();
-        createPushingRules(Movement.RIGHT);
-        createPushingRules(Movement.LEFT);
         head = new Head(startStatus);
     }
 
@@ -128,7 +126,7 @@ public class MultiTape {
      * Creates the pushing rules for the Turing machine
      * @param movement The movement of the head
      */
-    private void createPushingRules(Movement movement){
+    private ArrayList<Status> createPushingRules(Movement movement){
         ArrayList<Status> pushingStatuses = new ArrayList<Status>();
         ArrayList<Status> taggedPushingStatuses = new ArrayList<Status>();
         for(String character : alphabet){
@@ -163,10 +161,12 @@ public class MultiTape {
         hashtagPush.addRule(new Rule(" ", "#", movement, controlStatus));
         taggedPush.addRule(new Rule(" ", "*", movement, controlStatus));
 
-        statuses.addAll(pushingStatuses);
-        statuses.addAll(taggedPushingStatuses);
-        statuses.add(hashtagPush);
-        statuses.add(taggedPush);
+        ArrayList<Status> returnStatuses = new ArrayList<Status>();
+        returnStatuses.add(hashtagPush);
+        returnStatuses.add(taggedPush);
+        returnStatuses.addAll(pushingStatuses);
+        returnStatuses.addAll(taggedPushingStatuses);
+        return returnStatuses;
     }
 
     /**
@@ -270,10 +270,24 @@ public class MultiTape {
     }
 
     private void createStatuses(){
+        createControlStatus();
         ArrayList<Status> readingStatuses = createReadingStatuses();
         ArrayList<Status> movingStatuses = createMovingStatuses();
         ArrayList<Status> writingStatuses = createWritingStatuses();
-        
+        ArrayList<Status> pushingStatusesRight = createPushingRules(Movement.RIGHT);        
+        ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
+
+        //Connect start status to reading statuses
+        for(int i=0; i<inputRules.size(); i++){
+            StringBuilder statusName = new StringBuilder("read#");
+            for(String read : inputRules.get(i).getRead()){
+                
+            }
+        }
+
+        //Add rules to writing statuses if the tape is the last tape, and connect reading statuses to writing statuses
+       
+        //Connect writing statuses to pushing statuses if the tape is ending
 
     }
 
