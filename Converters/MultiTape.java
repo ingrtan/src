@@ -1,5 +1,6 @@
 package Converters;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import Data.Head;
@@ -52,9 +53,9 @@ public class MultiTape {
         statuses.add(startStatus);
         createSetupRules();
         splitRules();
+        createStatuses();
         head = new Head(startStatus);
         StringBuilder outputBuilder = new StringBuilder();
-        outputBuilder.append("tapes:" + tapeNumber);
         for(Status status : statuses){
             outputBuilder.append(status.toString());
             outputBuilder.append("\n");
@@ -90,7 +91,7 @@ public class MultiTape {
             setupStatuses.add(status);
         }
         boolean isHashtag = true;
-        for(int i = 0; i < tapeNumber - 1; i++){
+        for(int i = 0; i < setupStatuses.size() - 1; i++){
             if(isHashtag){
                 setupStatuses.get(i).addRule(new Rule(" ", "#", Movement.RIGHT, setupStatuses.get(i + 1)));
                 isHashtag = false;
@@ -174,6 +175,7 @@ public class MultiTape {
         returnStatuses.add(taggedPush);
         returnStatuses.addAll(pushingStatuses);
         returnStatuses.addAll(taggedPushingStatuses);
+        statuses.addAll(returnStatuses);
         return returnStatuses;
     }
 
@@ -312,6 +314,24 @@ public class MultiTape {
         } else {
             return Movement.STAY;
         }
+    }
+
+    private Rule createRule(String read, String write, Movement move, String nextState){
+        for(Status status : statuses){
+            if(status.getName().equals(nextState)){
+                return new Rule(read, write, move, status);
+            }
+        }
+        return null;
+    }
+
+    private Rule createRule(String read, String write, Movement move, String nextState, ArrayList<Status> possibleStates){
+        for(Status status : possibleStates){
+            if(status.getName().equals(nextState)){
+                return new Rule(read, write, move, status);
+            }
+        }
+        return null;
     }
 
     public Head getHead() {

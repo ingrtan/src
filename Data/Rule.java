@@ -66,7 +66,15 @@ public class Rule {
         }
     }
 
+    private String readable(String write2){
+        if (!write2.equals(" ")) {
+            return write2;
+        } else {
+            return "_";
+        }
+    }
+
     public String getWrintingParts(){
-        return next_state.getName() + ": " +write + ": " + direction;
+        return next_state.getName() + ": " + readable(write) + ": " + direction;
     }
 }
