@@ -77,4 +77,8 @@ public class Rule {
     public String getWrintingParts(){
         return next_state.getName() + ": " + readable(write) + ": " + direction;
     }
+
+    public String getReading() {
+        return readable(sign);
+    }
 }

@@ -7,6 +7,7 @@ public class Parser {
     private ArrayList<String> states = new ArrayList<String>();
     private ArrayList<ParsedRule> rules = new ArrayList<ParsedRule>();
     private ArrayList<String> alphabet = new ArrayList<String>();
+    private String startState;
 
 
     public Parser(String input) {
@@ -20,7 +21,13 @@ public class Parser {
         // group lines into states
         int i = 0;
         ParsedRule rule = new ParsedRule();
+        boolean start = true;
         for (String line : lines) {
+            if (start) {
+                startState = line.split("Starting: ")[1];
+                start = false;
+                continue;
+            }
             if (line.equals("")) {
                 i = 0;
                 continue;
@@ -66,5 +73,9 @@ public class Parser {
 
     public ArrayList<String> getAlphabet() {
         return alphabet;
+    }
+
+    public String getStartState() {
+        return startState;
     }
 }

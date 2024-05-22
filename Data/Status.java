@@ -75,8 +75,8 @@ public class Status {
     public String toString(){
         StringBuilder result = new StringBuilder();
         for(Rule r:rules){
-            result.append(name + ":");
-            result.append(r.getSign() + "\n");
+            result.append(name + ": ");
+            result.append(r.getReading() + "\n");
             result.append(r.getWrintingParts() + "\n");
         }
         return result.toString();
