@@ -75,9 +75,14 @@ public class Status {
     public String toString(){
         StringBuilder result = new StringBuilder();
         for(Rule r:rules){
+            if(r == null){
+                result.append(name + "null\n");
+            }else{
             result.append(name + ": ");
             result.append(r.getReading() + "\n");
             result.append(r.getWrintingParts() + "\n");
+            result.append("\n");
+            }
         }
         return result.toString();
     }

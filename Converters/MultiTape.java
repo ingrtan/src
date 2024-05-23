@@ -260,7 +260,7 @@ public class MultiTape {
             }
             status.addRule(new Rule("#", "#", Movement.RIGHT, status));
         }
-        //statuses.addAll(readingStatuses);
+        statuses.addAll(readingStatuses);
         return readingStatuses;
     }
 
@@ -335,6 +335,42 @@ public class MultiTape {
         
     }
 
+    private ArrayList<Status> createGoToStartReaderStatuses(){
+        ArrayList<Status> goToStartStatuses = new ArrayList<Status>();
+        for(String state : states){
+            Status status = new Status("goToStartRead#" + state);
+            goToStartStatuses.add(status);
+        }
+        for(Status status : goToStartStatuses){
+            for(String character : alphabet){
+                status.addRule(new Rule(character, character, Movement.LEFT, status));
+                status.addRule(new Rule(character+"*", character+"*", Movement.LEFT, status));
+            }
+            status.addRule(new Rule("#", "#", Movement.LEFT, status));
+            status.addRule(new Rule("*", "*", Movement.LEFT, status));
+        }
+        statuses.addAll(goToStartStatuses);
+        return goToStartStatuses;
+    }
+
+    private ArrayList<Status> createGoToStartWriterStatuses(){
+        ArrayList<Status> goToStartStatuses = new ArrayList<Status>();
+        for(int i = 0; i < inputRules.size(); i++){
+            Status status = new Status("goToStartWrite#" + i);
+            goToStartStatuses.add(status);
+        }
+        for(Status status : goToStartStatuses){
+            for(String character : alphabet){
+                status.addRule(new Rule(character, character, Movement.LEFT, status));
+                status.addRule(new Rule(character+"*", character+"*", Movement.LEFT, status));
+            }
+            status.addRule(new Rule("#", "#", Movement.LEFT, status));
+            status.addRule(new Rule("*", "*", Movement.LEFT, status));
+        }
+        statuses.addAll(goToStartStatuses);
+        return goToStartStatuses;
+    }
+
     private void createStatuses(){
         controlStatusRight = new Status("ControlRight");
         controlStatusLeft = new Status("ControlLeft");
@@ -343,6 +379,7 @@ public class MultiTape {
         ArrayList<Status> writingStatuses = createWritingStatuses();
         ArrayList<Status> pushingStatusesRight = createPushingRules(Movement.RIGHT);        
         ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
+        ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
 
         //Connect start status to reading statuses
         for(int i=0; i<inputRules.size(); i++){
@@ -358,16 +395,19 @@ public class MultiTape {
         for(int i = 0; i <inputRules.size(); i++){
             for(int j = 0; j < tapeNumber; j++){
                 if(j == tapeNumber-1){
-                //TODO: Add rules to writing statuses if the tape is the last tape to enter the reading status
-                } else {
-                    if(inputRules.get(i).getMove()[j].equals(">")){
-                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
-                    } else if(inputRules.get(i).getMove()[j].equals("<")){
-                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
-                    }
+                    writerStatuses.get(counter).addRule(createRule(" ", " ", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getState(), goToStartReaderStatuses));
+                } 
+                if(inputRules.get(i).getMove()[j].equals(">")){
+                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
+                } else if(inputRules.get(i).getMove()[j].equals("<")){
+                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
                 }
                 counter++;
             }
+        }
+
+        for(int i = 0; i < states.size(); i++){
+            goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
         }
         //Conncect control statuses to writing statuses
     }
@@ -393,6 +433,7 @@ public class MultiTape {
                 return new Rule(read, write, move, status);
             }
         }
+        System.out.println("State not found " + nextState);
         return null;
     }
 
@@ -402,6 +443,7 @@ public class MultiTape {
                 return new Rule(read, write, move, status);
             }
         }
+        System.out.println("State not found " + nextState);
         return null;
     }
 
