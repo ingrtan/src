@@ -253,7 +253,7 @@ public class MultiTape {
             for(String character : alphabet){
                 status.addRule(new Rule(character, character, Movement.RIGHT, status));
                 for(Status nextStatus : readingStatuses){
-                    if(nextStatus.getName().contains(status.getName() + "#" + character)){
+                    if(nextStatus.getName().equals(status.getName() + "#" + character)){
                         status.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, nextStatus));
                     }
                 }
@@ -380,6 +380,7 @@ public class MultiTape {
         ArrayList<Status> pushingStatusesRight = createPushingRules(Movement.RIGHT);        
         ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
         ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
+        ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
 
         //Connect start status to reading statuses
         for(int i=0; i<inputRules.size(); i++){
@@ -389,7 +390,17 @@ public class MultiTape {
             }
         }
         //Conncet reading statuses to wring statuses
-
+        for (int i = 0; i < inputRules.size(); i++){
+            goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
+            StringBuilder statusName = new StringBuilder("read#");
+            statusName.append(inputRules.get(i).getState());
+            for(String read : inputRules.get(i).getRead()){
+                statusName.append("#");
+                statusName.append(read);
+            }
+            searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
+            goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
+        }
         //Connect writing statuses to pushing statuses if the tape is ending
         int counter = 0;
         for(int i = 0; i <inputRules.size(); i++){
@@ -437,6 +448,26 @@ public class MultiTape {
         return null;
     }
 
+    private Status searchStatus(String name){
+        for(Status status : statuses){
+            if(status.getName().equals(name)){
+                return status;
+            }
+        }
+        System.out.println("Status not found " + name);
+        return null;
+    }
+
+    private Status searchStatus(String name, ArrayList<Status> statusList){
+        for(Status status : statusList){
+            if(status.getName().equals(name)){
+                return status;
+            }
+        }
+        System.out.println("Status not found " + name);
+        return null;
+    }
+
     private Rule createRule(String read, String write, Movement move, String nextState, ArrayList<Status> possibleStates){
         for(Status status : possibleStates){
             if(status.getName().equals(nextState)){
@@ -455,3 +486,5 @@ public class MultiTape {
         return output;
     }
 }
+
+//TODO: Add control statuses, setup starting status
