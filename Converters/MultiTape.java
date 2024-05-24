@@ -331,7 +331,24 @@ public class MultiTape {
     /**
      * Creates the control status for the Turing machine
      */
-    private void createControlStatuses(){
+    private void createControlStatuses(ArrayList<Status> writingStatuses){
+        int counter = 0;
+        int ruleCounter = 0;
+        for(Status status : writerStatuses){
+            if(counter < tapeNumber-1){
+                controlStatusLeft.addRule(new Rule(status.getName(), "*", Movement.RIGHT, writingStatuses.get(counter+1)));
+                controlStatusRight.addRule(new Rule(status.getName(), "*", Movement.RIGHT, writingStatuses.get(counter+1)));
+            } else {
+                controlStatusLeft.addRule(createRule(status.getName(), "*", Movement.LEFT, "goToStartRead#"+inputRules.get(ruleCounter).getState()));
+                controlStatusRight.addRule(createRule(status.getName(), "*", Movement.LEFT, "goToStartRead#"+inputRules.get(ruleCounter).getState()));
+            }
+            counter++;
+        }
+        statuses.add(controlStatusLeft);
+        statuses.add(controlStatusRight);
+    }
+
+    private void setStarterStatus(){
         
     }
 
@@ -384,12 +401,9 @@ public class MultiTape {
 
         //Connect start status to reading statuses
         for(int i=0; i<inputRules.size(); i++){
-            StringBuilder statusName = new StringBuilder("read#");
-            for(String read : inputRules.get(i).getRead()){
-                
-            }
+            
         }
-        //Conncet reading statuses to wring statuses
+
         for (int i = 0; i < inputRules.size(); i++){
             goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
             StringBuilder statusName = new StringBuilder("read#");
@@ -401,7 +415,7 @@ public class MultiTape {
             searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
             goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
         }
-        //Connect writing statuses to pushing statuses if the tape is ending
+
         int counter = 0;
         for(int i = 0; i <inputRules.size(); i++){
             for(int j = 0; j < tapeNumber; j++){
@@ -420,7 +434,8 @@ public class MultiTape {
         for(int i = 0; i < states.size(); i++){
             goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
         }
-        //Conncect control statuses to writing statuses
+
+        createControlStatuses(writingStatuses);
     }
 
     /**
@@ -487,4 +502,4 @@ public class MultiTape {
     }
 }
 
-//TODO: Add control statuses, setup starting status
+//TODO: Add control statuses, setup starting status, chek if all created statuses are added to the statuses list
