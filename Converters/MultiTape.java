@@ -44,6 +44,7 @@ public class MultiTape {
         statuses.add(startStatus);
         splitRules();
         createStatuses();
+        setStarterStatus();
         createSetupRules();
         head = new Head(startStatus);
         StringBuilder outputBuilder = new StringBuilder();
@@ -138,11 +139,11 @@ public class MultiTape {
             startCheckStatus.addRule(new Rule(character + "*", character + "*", Movement.STAY, startStatus));
         }
         startCheckStatus.addRule(new Rule("*", "*", Movement.STAY, startStatus));
-        /*statuses.addAll(setupStatuses);
+        statuses.addAll(setupStatuses);
         statuses.add(goBackStatus);
         statuses.add(startCheckStatus);
         statuses.add(firstStatus);
-        statuses.add(startingStatus);*/
+        statuses.add(startingStatus);
     }
 
     /**
@@ -349,7 +350,7 @@ public class MultiTape {
     }
 
     private void setStarterStatus(){
-        
+        startStatus = searchStatus("read#"+startState);
     }
 
     private ArrayList<Status> createGoToStartReaderStatuses(){
