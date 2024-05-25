@@ -393,17 +393,11 @@ public class MultiTape {
         controlStatusRight = new Status("ControlRight");
         controlStatusLeft = new Status("ControlLeft");
         ArrayList<Status> readingStatuses = createReadingStatuses();
-        ArrayList<Status> movingStatuses = createMovingStatuses();
         ArrayList<Status> writingStatuses = createWritingStatuses();
         ArrayList<Status> pushingStatusesRight = createPushingRules(Movement.RIGHT);        
         ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
         ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
         ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
-
-        //Connect start status to reading statuses
-        for(int i=0; i<inputRules.size(); i++){
-            
-        }
 
         for (int i = 0; i < inputRules.size(); i++){
             goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
