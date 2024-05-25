@@ -46,6 +46,7 @@ public class NonDetermenistic {
         startStatus = new Status("start");
         statuses.add(startStatus);
         splitRules();
+        searchNonDeterministicRuling();
         createStatuses();
         setStarterStatus();
         createSetupRules();
@@ -227,6 +228,14 @@ public class NonDetermenistic {
             } else {
                 pushingStatuses.get(i).addRule(new Rule(" ", alphabet.get(i), Movement.RIGHT, controlStatusLeft));
                 taggedPushingStatuses.get(i).addRule(new Rule(" ", alphabet.get(i)+"*", Movement.RIGHT, controlStatusLeft));
+            }
+            for(int j = 0; j < separatorStatusesState.size(); j++){
+                pushingStatuses.get(i).addRule(new Rule(alphabet.get(j), "&" + states.get(j), movement, separatorStatusesState.get(j)));
+                taggedPushingStatuses.get(i).addRule(new Rule(alphabet.get(j), "&" + states.get(j), movement, separatorStatusesState.get(j)));
+            }
+            for(int j = 0; j < separatorStatusesTag.size(); j++){
+                pushingStatuses.get(i).addRule(new Rule(alphabet.get(j), "&" + i, movement, separatorStatusesTag.get(j)));
+                taggedPushingStatuses.get(i).addRule(new Rule(alphabet.get(j), "&" + i, movement, separatorStatusesTag.get(j)));
             }
         }
         hashtagPush.addRule(new Rule("#", "#", movement, hashtagPush));
@@ -585,6 +594,21 @@ public class NonDetermenistic {
             }
         }
         nonDeterministicRuleGroup = ruleIndexGroups;
+    }
+
+    private void nonDetermenisticAlphabeth(){
+        ArrayList<String> newAlphabet = new ArrayList<String>();
+        StringBuilder alphabetBuilder = new StringBuilder();
+        for(ArrayList<Integer> group : nonDeterministicRuleGroup){
+            alphabetBuilder = new StringBuilder();
+            for(int i = 0; i < group.size(); i++){
+                alphabetBuilder.append("&");
+                alphabetBuilder.append(group.get(i));
+                if(i != 0){
+                    newAlphabet.add(alphabetBuilder.toString());
+                }
+            }
+        }
     }
 
     public Head getHead() {
