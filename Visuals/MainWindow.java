@@ -41,6 +41,7 @@ public class MainWindow extends JFrame{
     private int numberOfLines;
     private boolean nonDeterministic;
     private Head head;
+    private JCheckBox deterministic;
 
     /**
      * Constructor.
@@ -122,6 +123,14 @@ public class MainWindow extends JFrame{
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton copyButton = new JButton("Convert");
+        deterministic = new JCheckBox("Non-Deterministic");
+        buttonPanel.add(deterministic);
+        deterministic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nonDeterministic = deterministic.isSelected();
+            }
+        });
         copyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
