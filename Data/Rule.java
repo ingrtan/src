@@ -75,6 +75,9 @@ public class Rule {
     }
 
     public String getWrintingParts(){
+        if(next_state == null){
+            return "NULL" + ": " + readable(write) + ": " + direction;
+        }
         return next_state.getName() + ": " + readable(write) + ": " + direction;
     }
 

@@ -442,14 +442,15 @@ public class NonDetermenistic {
     private void createStatuses(){
         controlStatusRight = new Status("ControlRight");
         controlStatusLeft = new Status("ControlLeft");
+        controlReaderStatus = new Status("controlReader");
+        controlWriterStatus = new Status("controlWriter");
         ArrayList<Status> readingStatuses = createReadingStatuses();
         ArrayList<Status> writingStatuses = createWritingStatuses();
         ArrayList<Status> pushingStatusesRight = createPushingRules(Movement.RIGHT);        
         ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
         ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
         ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
-        controlReaderStatus = new Status("controlReader");
-        controlWriterStatus = new Status("controlWriter");
+
 
         for (int i = 0; i < inputRules.size(); i++){
             StringBuilder statusName = new StringBuilder("read#");
