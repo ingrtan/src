@@ -520,11 +520,7 @@ public class NonDetermenistic {
         Status copyControlStatus = new Status("copyControl");
         Status copyControlStatus2 = new Status("copyControl2");
         ArrayList<Status> copyStatuses = new ArrayList<Status>();
-        ArrayList<String> alphabetExtended = new ArrayList<String>();
-        alphabetExtended.addAll(alphabet);
-        alphabetExtended.add("#");
-        alphabetExtended.add("*");
-        for(String character : alphabetExtended){
+        for(String character : alphabet){
             Status status = new Status("copy#" + character);
             status.addRule(new Rule(" ", character, Movement.RIGHT, copyControlStatus));
             copyControlStatus2.addRule(new Rule(character, character+"$", Movement.RIGHT, status));
@@ -534,6 +530,14 @@ public class NonDetermenistic {
             copyControlStatus2.addRule(new Rule(character+"*", character+"*$", Movement.RIGHT, status));
             copyStatuses.add(status);
         }
+        Status state = new Status("copy#");
+        state.addRule(new Rule(" ", "#", Movement.RIGHT, copyControlStatus));
+        copyControlStatus2.addRule(new Rule("#", "#$", Movement.RIGHT, state));
+        copyStatuses.add(state);
+        state = new Status("copy#*");
+        state.addRule(new Rule(" ", "*", Movement.RIGHT, copyControlStatus));
+        copyControlStatus2.addRule(new Rule("*", "*$", Movement.RIGHT, state));
+        copyStatuses.add(state);
         for(Status status : copyStatuses){
             for(String character : alphabet){
                 status.addRule(new Rule(character, character, Movement.RIGHT, status));
