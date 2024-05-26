@@ -400,7 +400,6 @@ public class MultiTape {
         ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
 
         for (int i = 0; i < inputRules.size(); i++){
-            goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
             StringBuilder statusName = new StringBuilder("read#");
             statusName.append(inputRules.get(i).getState());
             for(String read : inputRules.get(i).getRead()){
@@ -496,5 +495,3 @@ public class MultiTape {
         return output;
     }
 }
-
-//TODO: Add control statuses, setup starting status, chek if all created statuses are added to the statuses list

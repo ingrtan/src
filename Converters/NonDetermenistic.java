@@ -402,6 +402,7 @@ public class NonDetermenistic {
         ArrayList<Status> goToStartStatuses = new ArrayList<Status>();
         for(String state : states){
             Status status = new Status("goToStartRead#" + state);
+            status.addRule(new Rule("&", "&"+state, Movement.RIGHT, controlWriterStatus));
             goToStartStatuses.add(status);
         }
         for(Status status : goToStartStatuses){
@@ -420,6 +421,7 @@ public class NonDetermenistic {
         ArrayList<Status> goToStartStatuses = new ArrayList<Status>();
         for(int i = 0; i < inputRules.size(); i++){
             Status status = new Status("goToStartWrite#" + i);
+            status.addRule(new Rule("&", "&"+i, Movement.RIGHT, controlReaderStatus));
             goToStartStatuses.add(status);
         }
         for(Status status : goToStartStatuses){
@@ -443,9 +445,10 @@ public class NonDetermenistic {
         ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
         ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
         ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
+        controlReaderStatus = new Status("controlReader");
+        controlWriterStatus = new Status("controlWriter");
 
         for (int i = 0; i < inputRules.size(); i++){
-            goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
             StringBuilder statusName = new StringBuilder("read#");
             statusName.append(inputRules.get(i).getState());
             for(String read : inputRules.get(i).getRead()){
@@ -453,7 +456,8 @@ public class NonDetermenistic {
                 statusName.append(read);
             }
             searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
-            goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
+            //goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
+            controlWriterStatus.addRule(createRule("&"+1, "&", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
         }
 
         int counter = 0;
@@ -472,8 +476,23 @@ public class NonDetermenistic {
         }
 
         for(int i = 0; i < states.size(); i++){
-            goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
+            //goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
+            controlReaderStatus.addRule(createRule("&"+i, "&", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
         }
+
+        Status goToRightControl = new Status("goToRightControl");
+        for(String character : alphabet){
+            goToRightControl.addRule(new Rule(character, character, Movement.LEFT, goToRightControl));
+            goToRightControl.addRule(new Rule(character+"*", character+"*", Movement.LEFT, goToRightControl));
+        }
+        goToRightControl.addRule(new Rule("#", "#", Movement.LEFT, goToRightControl));
+        goToRightControl.addRule(new Rule("*", "*", Movement.LEFT, goToRightControl));
+        for(String state: states){
+            goToRightControl.addRule(new Rule("&"+state, "&"+state, Movement.LEFT, goToRightControl));
+        }
+        controlReaderStatus.addRule(new Rule(" ", " ", Movement.LEFT, copySearchStatus));
+        controlWriterStatus.addRule(new Rule(" ", " ", Movement.LEFT, goToRightControl));
+        goToRightControl.addRule(new Rule(" ", " ", Movement.RIGHT, controlReaderStatus));
 
         createControlStatuses(writingStatuses);
     }
@@ -661,4 +680,4 @@ public class NonDetermenistic {
 
 }
 
-//TODO: Add control statuses, setup starting status, chek if all created statuses are added to the statuses list
+//Writer control logic, reader control logic, chek if all statuses are added
