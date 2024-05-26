@@ -268,19 +268,6 @@ public class MultiTape {
     }
 
     /**
-     * Creates the moving statuses for the Turing machine
-     * @return The moving statuses
-     */
-    private ArrayList<Status> createMovingStatuses(){
-        ArrayList<Status> movingStatuses = new ArrayList<Status>();
-        for(String state : states){
-            Status status = new Status("move#" + state);
-            movingStatuses.add(status);
-        }
-        return movingStatuses;
-    }
-
-    /**
      * Creates the writing statuses for the Turing machine
      * @return The writing statuses
      */

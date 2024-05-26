@@ -314,19 +314,6 @@ public class NonDetermenistic {
     }
 
     /**
-     * Creates the moving statuses for the Turing machine
-     * @return The moving statuses
-     */
-    private ArrayList<Status> createMovingStatuses(){
-        ArrayList<Status> movingStatuses = new ArrayList<Status>();
-        for(String state : states){
-            Status status = new Status("move#" + state);
-            movingStatuses.add(status);
-        }
-        return movingStatuses;
-    }
-
-    /**
      * Creates the writing statuses for the Turing machine
      * @return The writing statuses
      */
@@ -675,22 +662,6 @@ public class NonDetermenistic {
             }
         }
         nonDeterministicRuleGroup = ruleIndexGroups;
-    }
-
-    private ArrayList<String> nonDetermenisticAlphabeth(){
-        ArrayList<String> newAlphabet = new ArrayList<String>();
-        StringBuilder alphabetBuilder = new StringBuilder();
-        for(ArrayList<Integer> group : nonDeterministicRuleGroup){
-            alphabetBuilder = new StringBuilder();
-            for(int i = 0; i < group.size(); i++){
-                alphabetBuilder.append("&");
-                alphabetBuilder.append(group.get(i));
-                if(i != 0){
-                    newAlphabet.add(alphabetBuilder.toString());
-                }
-            }
-        }
-        return newAlphabet;
     }
 
     public Head getHead() {
