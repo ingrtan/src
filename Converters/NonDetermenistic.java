@@ -301,6 +301,9 @@ public class NonDetermenistic {
                 for(Status nextStatus : readingStatuses){
                     if(nextStatus.getName().equals(status.getName() + "#" + character)){
                         status.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, nextStatus));
+                        if(character.equals("_")){
+                            status.addRule(new Rule("*", "*", Movement.RIGHT, nextStatus));
+                        }
                     }
                 }
             }

@@ -20,7 +20,6 @@ public class MultiTape {
     private Status startStatus;
     private ArrayList<ParsedRule> acceptRules = new ArrayList<ParsedRule>();
     private ArrayList<ParsedRule> nonAcceptRules = new ArrayList<ParsedRule>();
-    private Status acceptStatus;
     private Status controlStatusRight;
     private Status controlStatusLeft;
     private String startState;
@@ -256,6 +255,9 @@ public class MultiTape {
                 for(Status nextStatus : readingStatuses){
                     if(nextStatus.getName().equals(status.getName() + "#" + character)){
                         status.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, nextStatus));
+                        if(character.equals("_")){
+                            status.addRule(new Rule("*", "*", Movement.RIGHT, nextStatus));
+                        }
                     }
                 }
             }
