@@ -25,6 +25,7 @@ public class NonDetermenistic {
     private Status controlStatusLeft;
     private String startState;
     private ArrayList<Status> writerStatuses = new ArrayList<Status>();
+    private ArrayList<Integer> nonDeterministicRules = new ArrayList<Integer>();
     private ArrayList<ArrayList<Integer>> nonDeterministicRuleGroup = new ArrayList<ArrayList<Integer>>();
     private Status controlReaderStatus;
     private Status controlWriterStatus;
@@ -426,6 +427,30 @@ public class NonDetermenistic {
         return goToStartStatuses;
     }
 
+    private ArrayList<Status> createGoToStartWriterStatusesND(){
+        ArrayList<Status> goToStartStatuses = new ArrayList<Status>();
+        for(int i = 0; i < nonDeterministicRuleGroup.size(); i++){
+            StringBuilder statusName = new StringBuilder("");
+            for(int j = 0; j < nonDeterministicRuleGroup.get(i).size(); j++){
+                statusName.append("&");
+                statusName.append(nonDeterministicRuleGroup.get(i).get(j));
+            }
+            Status status = new Status("goToStartWrite"+statusName.toString());
+            status.addRule(new Rule("&", statusName.toString(), Movement.RIGHT, controlReaderStatus));
+            goToStartStatuses.add(status);
+        }
+        for(Status status : goToStartStatuses){
+            for(String character : alphabet){
+                status.addRule(new Rule(character, character, Movement.LEFT, status));
+                status.addRule(new Rule(character+"*", character+"*", Movement.LEFT, status));
+            }
+            status.addRule(new Rule("#", "#", Movement.LEFT, status));
+            status.addRule(new Rule("*", "*", Movement.LEFT, status));
+        }
+        statuses.addAll(goToStartStatuses);
+        return goToStartStatuses;
+    }
+
     private void createStatuses(){
         controlStatusRight = new Status("ControlRight");
         controlStatusLeft = new Status("ControlLeft");
@@ -437,6 +462,7 @@ public class NonDetermenistic {
         ArrayList<Status> pushingStatusesLeft = createPushingRules(Movement.LEFT);
         ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
         ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
+        ArrayList<Status> goToStartWriterStatusesND = createGoToStartWriterStatusesND();
         ArrayList<Status> copyStatuses = createCopyStatuses();
 
         for (int i = 0; i < inputRules.size(); i++){
@@ -446,9 +472,21 @@ public class NonDetermenistic {
                 statusName.append("#");
                 statusName.append(read);
             }
-            searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
+            if(!nonDeterministicRules.contains(i)){
+                searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
+            }
             //goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
             controlWriterStatus.addRule(createRule("&"+1, "&", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
+        }
+        for(int i = 0; i < nonDeterministicRuleGroup.size(); i++){
+            ArrayList<Integer> group = nonDeterministicRuleGroup.get(i);
+            StringBuilder statusName = new StringBuilder("read#");
+            statusName.append(inputRules.get(group.get(0)).getState());
+            for(String read : inputRules.get(group.get(0)).getRead()){
+                statusName.append("#");
+                statusName.append(read);
+            }
+            searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatusesND.get(i)));
         }
 
         int counter = 0;
@@ -561,7 +599,7 @@ public class NonDetermenistic {
             for(int i = 0; i < group.size(); i++){
                 if(i != 0){
                     Status status = new Status("copy#&" + group.get(i));
-                    copySearchStatus.addRule(new Rule(alphabetBuilder.toString()+group.get(i), alphabetBuilder.toString()+"$", Movement.RIGHT, status));
+                    copySearchStatus.addRule(new Rule(alphabetBuilder.toString()+"&"+group.get(i), alphabetBuilder.toString()+"$", Movement.RIGHT, status));
                     copyControlStatus.addRule(new Rule(alphabetBuilder.toString()+"$", alphabetBuilder.toString(), Movement.RIGHT, copyControlStatus2));
                     status.addRule(new Rule(" ", "&"+group.get(i), Movement.LEFT, copyControlStatus));
                     copyStatuses.add(status);
@@ -661,6 +699,7 @@ public class NonDetermenistic {
                 ruleIndexGroups.add(group);
             }
         }
+        nonDeterministicRules = ruleIndexes;
         nonDeterministicRuleGroup = ruleIndexGroups;
     }
 
