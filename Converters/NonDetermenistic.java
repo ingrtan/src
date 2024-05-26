@@ -520,7 +520,11 @@ public class NonDetermenistic {
         Status copyControlStatus = new Status("copyControl");
         Status copyControlStatus2 = new Status("copyControl2");
         ArrayList<Status> copyStatuses = new ArrayList<Status>();
-        for(String character : alphabet){
+        ArrayList<String> alphabetExtended = new ArrayList<String>();
+        alphabetExtended.addAll(alphabet);
+        alphabetExtended.add("#");
+        alphabetExtended.add("*");
+        for(String character : alphabetExtended){
             Status status = new Status("copy#" + character);
             status.addRule(new Rule(" ", character, Movement.RIGHT, copyControlStatus));
             copyControlStatus2.addRule(new Rule(character, character+"$", Movement.RIGHT, status));
@@ -565,7 +569,7 @@ public class NonDetermenistic {
             alphabetBuilder = new StringBuilder();
             for(int i = 0; i < group.size(); i++){
                 if(i != 0){
-                    Status status = new Status("copySearch#" + alphabetBuilder.toString());
+                    Status status = new Status("copy#&" + group.get(i));
                     copySearchStatus.addRule(new Rule(alphabetBuilder.toString()+group.get(i), alphabetBuilder.toString()+"$", Movement.RIGHT, status));
                     copyControlStatus.addRule(new Rule(alphabetBuilder.toString()+"$", alphabetBuilder.toString(), Movement.RIGHT, copyControlStatus2));
                     status.addRule(new Rule(" ", "&"+group.get(i), Movement.LEFT, copyControlStatus));
@@ -589,6 +593,7 @@ public class NonDetermenistic {
         for(int i = 0; i < inputRules.size(); i++){
             copyControlStatus2.addRule(new Rule("&"+i,"&"+i, Movement.LEFT, copySearchStatus));
         }
+        statuses.addAll(copyStatuses);
         statuses.add(copySearchStatus);
     }
 
@@ -635,11 +640,20 @@ public class NonDetermenistic {
     private void searchNonDeterministicRuling(){
         ArrayList<Integer> ruleIndexes = new ArrayList<Integer>();
         ArrayList<ArrayList<Integer>> ruleIndexGroups = new ArrayList<ArrayList<Integer>>();
+        boolean isSame = false;
         for(int i = 0; i < inputRules.size(); i++){
             ArrayList<Integer> group = new ArrayList<Integer>();           
             for(int j = 0; j < inputRules.size(); j++){
                 if(i != j){
-                    if(inputRules.get(i).getState().equals(inputRules.get(j).getState())&&inputRules.get(i).getRead().equals(inputRules.get(j).getRead())){
+                    for(int k = 0 ; k < inputRules.get(i).getTapeLength(); k++){
+                        if(inputRules.get(i).getRead()[k].equals(inputRules.get(j).getRead()[k])){
+                            isSame = true;
+                        } else {
+                            isSame = false;
+                            break;
+                        }
+                    }
+                    if(inputRules.get(i).getState().equals(inputRules.get(j).getState())&&isSame){
                         if(!ruleIndexes.contains(i)){
                             ruleIndexes.add(i);
                             group.add(i);
@@ -648,6 +662,7 @@ public class NonDetermenistic {
                             ruleIndexes.add(j);
                             group.add(j);
                         }
+                        isSame = false;
                     }
                 }
             }
