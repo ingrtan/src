@@ -59,6 +59,9 @@ public class NonDetermenistic {
     }
 
     private boolean check() {
+        if(output != null) {
+            return false;
+        }
         if(states.isEmpty()) {
             output = "Empty input";
             return false;
@@ -94,10 +97,14 @@ public class NonDetermenistic {
      */
     private void parse(){
         Parser parser = new Parser(input);
-        states = parser.getStates();
-        alphabet = parser.getAlphabet();
-        inputRules = parser.getRules();
-        startState = parser.getStartState();
+        if(!parser.isAccept()){
+            states = parser.getStates();
+            alphabet = parser.getAlphabet();
+            inputRules = parser.getRules();
+            startState = parser.getStartState();
+        }else{
+            output = "Problem with the line: " + parser.getBugged();
+        }
     }
     
     /**

@@ -8,6 +8,8 @@ public class Parser {
     private ArrayList<ParsedRule> rules = new ArrayList<ParsedRule>();
     private ArrayList<String> alphabet = new ArrayList<String>();
     private String startState;
+    private boolean accept = false;
+    private int bugged;
 
 
     public Parser(String input) {
@@ -22,7 +24,11 @@ public class Parser {
         int i = 0;
         ParsedRule rule = new ParsedRule();
         boolean start = true;
+        int j = 0;
+        try{
         for (String line : lines) {
+            System.out.println(j + " a " + line + " a " + i);
+            j++;
             if (start) {
                 startState = line.split("Starting: ")[1];
                 start = false;
@@ -61,6 +67,11 @@ public class Parser {
                 }
             }
         }
+        accept = true;
+        } catch (Exception e){
+            accept = false;
+            bugged = j;
+        }
     }
 
     public ArrayList<String> getStates() {
@@ -77,5 +88,13 @@ public class Parser {
 
     public String getStartState() {
         return startState;
+    }
+
+    public boolean isAccept() {
+        return accept;
+    }
+
+    public int getBugged() {
+        return bugged;
     }
 }
