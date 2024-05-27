@@ -491,9 +491,16 @@ public class NonDetermenistic {
                 statusName.append(read);
             }
             if(!nonDeterministicRules.contains(i)){
-                searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
+                Status readingStatus = searchStatus(statusName.toString(), readingStatuses);
+                for(String character : alphabet){
+                    readingStatus.addRule(new Rule(character, character, Movement.LEFT, goToStartWriterStatuses.get(i)));
+                }
+                for(String status : states){
+                    readingStatus.addRule(new Rule("&"+status, "&"+status, Movement.LEFT, goToStartWriterStatuses.get(i)));
+                }
+                readingStatus.addRule(new Rule("#", "#", Movement.LEFT, goToStartWriterStatuses.get(i)));
+                readingStatus.addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
             }
-            //goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
             controlWriterStatus.addRule(createRule("&"+1, "&", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
         }
         for(int i = 0; i < nonDeterministicRuleGroup.size(); i++){

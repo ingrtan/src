@@ -411,7 +411,12 @@ public class MultiTape {
                 statusName.append("#");
                 statusName.append(read);
             }
-            searchStatus(statusName.toString(), readingStatuses).addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
+            Status readingStatus = searchStatus(statusName.toString(), readingStatuses);
+            for(String character : alphabet){
+                readingStatus.addRule(new Rule(character, character, Movement.LEFT, goToStartWriterStatuses.get(i)));
+            }
+            readingStatus.addRule(new Rule("#", "#", Movement.LEFT, goToStartWriterStatuses.get(i)));
+            readingStatus.addRule(new Rule(" ", " ", Movement.LEFT, goToStartWriterStatuses.get(i)));
             goToStartWriterStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "write#"+inputRules.get(i).getState()+"#rule"+i+"#tape0", writingStatuses));
         }
 
