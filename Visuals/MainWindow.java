@@ -23,9 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 
 /**
  * The main window of the application.
@@ -123,6 +120,7 @@ public class MainWindow extends JFrame{
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         JButton copyButton = new JButton("Convert");
+        JButton simulateButton = new JButton("Simulate");
         deterministic = new JCheckBox("Non-Deterministic");
         buttonPanel.add(deterministic);
         deterministic.addActionListener(new ActionListener() {
@@ -150,6 +148,16 @@ public class MainWindow extends JFrame{
             }
         });
         buttonPanel.add(copyButton);
+        simulateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(head != null){
+                    SimulatorWindow simWin = new SimulatorWindow(head, mainFrame);
+                    simWin.setVisible(true);
+                }
+            }
+        });
+        buttonPanel.add(simulateButton);
         return buttonPanel;
     }
 
@@ -232,7 +240,6 @@ public class MainWindow extends JFrame{
                     mainFrame.setEnabled(true);
                 }
             });
-            numberOfLinesField = new JTextField(20);
             deterministic = new JCheckBox("Non-Deterministic");    
             createButton = new JButton("Create");
             createButton.addActionListener(new ActionListener() {
@@ -246,8 +253,6 @@ public class MainWindow extends JFrame{
                 }
             });
             JPanel panel = new JPanel(new FlowLayout());
-            panel.add(new JLabel("Number of Lines:"));
-            panel.add(numberOfLinesField);
             panel.add(deterministic);
             panel.add(createButton);
             add(panel);

@@ -81,6 +81,11 @@ public class Line {
     public ArrayList<String> getLineWithNeigbors(){
         ArrayList<String> result = new ArrayList<String>();
         try{
+            result.add(left.getLeftString());
+        }catch (NullPointerException e){
+            result.add(" ");
+        }
+        try{
             result.add(left.toString());
         }catch (NullPointerException e){
             result.add(" ");
@@ -91,7 +96,28 @@ public class Line {
         }catch (NullPointerException e){
             result.add(" ");
         }
+        try{
+            result.add(right.getRightString());
+        }catch (NullPointerException e){
+            result.add(" ");
+        }
         return result;
+    }
+
+    public String getLeftString(){
+        if(left == null){
+            return " ";
+        }else{
+            return left.toString();
+        }
+    }
+
+    public String getRightString(){
+        if(right == null){
+            return " ";
+        }else{
+            return right.toString();
+        }
     }
 
     /**

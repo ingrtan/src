@@ -9,6 +9,7 @@ public class Head {
     private Line spot;
     private boolean stopped = false;
     private ArrayList<Status> states = new ArrayList<Status>();
+    private Status start_state;
 
     /**
      * Constructor for Head
@@ -16,6 +17,7 @@ public class Head {
      */
     public Head(Status start_state){
         current_state = start_state;
+        this.start_state = start_state;
         spot = new Line();
     }
 
@@ -26,6 +28,7 @@ public class Head {
      */
     public Head(Status start_state, Line spot){
         current_state = start_state;
+        start_state = current_state;
         this.spot = spot;
     }
 
@@ -81,7 +84,7 @@ public class Head {
     /**
      * Activates the head
      */
-    private void activate(){
+    public void activate(){
         Rule r = current_state.getRule(spot.read());
         System.out.println("\n Current state: " + current_state.getName());
         System.out.println(spot.read());
@@ -89,6 +92,9 @@ public class Head {
         if(r == null){
             stopped = true;
             return;
+        }
+        if(r.getNext_state().isAccept()){
+            stopped = true;
         }
         System.out.println(r.toString());
         spot.write(r.getWrite());
@@ -116,7 +122,7 @@ public class Head {
      * Sets up the head
      * @param lines
      */
-    public void setup(ArrayList<String> lines){
+    public void setup(String[] lines){
         Line current = spot;
         for(String s:lines){
             current.write(s);
@@ -130,5 +136,25 @@ public class Head {
      */
     public String getStatuString(){
         return current_state.toString();
+    }
+
+    public boolean isAccept(){
+        return current_state.isAccept();
+    }
+
+    public void reset(){
+        current_state = start_state;
+        spot = new Line();
+        stopped = false;
+    }
+
+    public int getLongestStatusName(){
+        int longest = 0;
+        for(Status s:states){
+            if(s.getName().length() > longest){
+                longest = s.getName().length();
+            }
+        }
+        return longest;
     }
 }

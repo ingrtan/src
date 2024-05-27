@@ -517,12 +517,24 @@ public class NonDetermenistic {
         for(int i = 0; i <inputRules.size(); i++){
             for(int j = 0; j < tapeNumber; j++){
                 if(j == tapeNumber-1){
-                    writerStatuses.get(counter).addRule(createRule(" ", " ", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getState(), goToStartReaderStatuses));
-                } 
+                    writerStatuses.get(counter).addRule(createRule("&"+i, writerStatuses.get(i).getName(), Movement.LEFT, "goToStartRead#"+inputRules.get(i).getState(), goToStartReaderStatuses));
+                    for(int k = 0; k < inputRules.size(); k++){
+                        if(inputRules.get(i).getMove()[j].equals(">")){
+                            writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.RIGHT, "RightPush&"+k, pushingStatusesRight));
+                        }
+                    }
+                }
+                if(j == 0){
+                    for(int k = 0; k < states.size(); k++){
+                        if(inputRules.get(i).getMove()[j].equals("<")){
+                            writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.LEFT, "LeftPush&"+states.get(k), pushingStatusesLeft));
+                        }
+                    }
+                }
                 if(inputRules.get(i).getMove()[j].equals(">")){
                     writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
                 } else if(inputRules.get(i).getMove()[j].equals("<")){
-                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
+                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.LEFT, pushingStatusesLeft.get(0)));
                 }
                 counter++;
             }
@@ -729,4 +741,4 @@ public class NonDetermenistic {
 
 }
 
-//Writer control logic, reader control logic, chek if all statuses are added
+//Writer pushing statuses on case of &

@@ -125,9 +125,10 @@ public class MultiTape {
             }
         }
         Status goBackStatus = new Status("goBackToStart");
-        setupStatuses.get(setupStatuses.size()-1).addRule(new Rule(" ", "#", Movement.LEFT, goBackStatus));
+        setupStatuses.get(setupStatuses.size()-1).addRule(new Rule(" ", "*", Movement.LEFT, goBackStatus));
         for(String character : alphabet){
             goBackStatus.addRule(new Rule(character, character, Movement.LEFT, goBackStatus));
+            goBackStatus.addRule(new Rule(character+"*", character+"*", Movement.LEFT, goBackStatus));
         }
         Status startCheckStatus = new Status("startCheck");
         goBackStatus.addRule(new Rule("#", "#", Movement.LEFT, goBackStatus));
@@ -424,7 +425,7 @@ public class MultiTape {
             for(int j = 0; j < tapeNumber; j++){
                 if(j == tapeNumber-1){
                     writerStatuses.get(counter).addRule(createRule(" ", " ", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getState(), goToStartReaderStatuses));
-                } 
+                }
                 if(inputRules.get(i).getMove()[j].equals(">")){
                     writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
                 } else if(inputRules.get(i).getMove()[j].equals("<")){
@@ -504,3 +505,5 @@ public class MultiTape {
         return output;
     }
 }
+
+//writerstatuses handle empty character on the tape
