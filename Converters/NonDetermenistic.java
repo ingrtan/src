@@ -481,7 +481,7 @@ public class NonDetermenistic {
         ArrayList<Status> goToStartReaderStatuses = createGoToStartReaderStatuses();
         ArrayList<Status> goToStartWriterStatuses = createGoToStartWriterStatuses();
         ArrayList<Status> goToStartWriterStatusesND = createGoToStartWriterStatusesND();
-        ArrayList<Status> copyStatuses = createCopyStatuses();
+        createCopyStatuses();
 
         for (int i = 0; i < inputRules.size(); i++){
             StringBuilder statusName = new StringBuilder("read#");
@@ -566,45 +566,37 @@ public class NonDetermenistic {
         }
     }
 
-    private ArrayList<Status> createCopyStatuses(){
+    private void createCopyStatuses(){
         Status copyControlStatus = new Status("copyControl");
         Status copyControlStatus2 = new Status("copyControl2");
         ArrayList<Status> copyStatuses = new ArrayList<Status>();
         for(String character : alphabet){
             Status status = new Status("copy#" + character);
-            status.addRule(new Rule(" ", character, Movement.RIGHT, copyControlStatus));
+            status.addRule(new Rule(" ", character, Movement.LEFT, copyControlStatus));
             copyControlStatus2.addRule(new Rule(character, character+"$", Movement.RIGHT, status));
             copyStatuses.add(status);
             status = new Status("copy#" + character + "*");
-            status.addRule(new Rule(" ", character+"*", Movement.RIGHT, copyControlStatus));
+            status.addRule(new Rule(" ", character+"*", Movement.LEFT, copyControlStatus));
             copyControlStatus2.addRule(new Rule(character+"*", character+"*$", Movement.RIGHT, status));
             copyStatuses.add(status);
         }
         Status state = new Status("copy#");
-        state.addRule(new Rule(" ", "#", Movement.RIGHT, copyControlStatus));
+        state.addRule(new Rule(" ", "#", Movement.LEFT, copyControlStatus));
         copyControlStatus2.addRule(new Rule("#", "#$", Movement.RIGHT, state));
         copyStatuses.add(state);
         state = new Status("copy#*");
-        state.addRule(new Rule(" ", "*", Movement.RIGHT, copyControlStatus));
+        state.addRule(new Rule(" ", "*", Movement.LEFT, copyControlStatus));
         copyControlStatus2.addRule(new Rule("*", "*$", Movement.RIGHT, state));
         copyStatuses.add(state);
-        for(Status status : copyStatuses){
-            for(String character : alphabet){
-                status.addRule(new Rule(character, character, Movement.RIGHT, status));
-                status.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, status));
-            }
-            status.addRule(new Rule("#", "#", Movement.RIGHT, status));
-            status.addRule(new Rule("*", "*", Movement.RIGHT, status));
-        }
         for(String character : alphabet){
             copyControlStatus.addRule(new Rule(character+"$", character, Movement.RIGHT, copyControlStatus2));
             copyControlStatus.addRule(new Rule(character+"*$", character+"*", Movement.RIGHT, copyControlStatus2));
         }
+        copyControlStatus.addRule(new Rule("#$", "#", Movement.RIGHT, copyControlStatus2));
+        copyControlStatus.addRule(new Rule("*$", "*", Movement.RIGHT, copyControlStatus2));
         setupCopySearchStatus(copyControlStatus, copyControlStatus2, copyStatuses);
-        statuses.addAll(copyStatuses);
         statuses.add(copyControlStatus);
         statuses.add(copyControlStatus2);
-        return copyStatuses;
     }
 
     private void setupCopySearchStatus(Status copyControlStatus, Status copyControlStatus2, ArrayList<Status> copyStatuses){
