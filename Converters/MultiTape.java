@@ -39,13 +39,10 @@ public class MultiTape {
             return;
         }
         statuses = new ArrayList<Status>();
-        startStatus = new Status("start");
-        statuses.add(startStatus);
         splitRules();
         createStatuses();
         setStarterStatus();
         createSetupRules();
-        head = new Head(startStatus);
         StringBuilder outputBuilder = new StringBuilder();
         for(Status status : statuses){
             outputBuilder.append(status.toString());
@@ -103,6 +100,8 @@ public class MultiTape {
     private void createSetupRules(){
         Status firstStatus = new Status("Setup1");
         Status startingStatus = new Status("Setup2");
+        head = new Head(firstStatus);
+        firstStatus.addRule(new Rule(" ", "*", Movement.RIGHT, startingStatus));
         for(String character : alphabet){
             firstStatus.addRule(new Rule(character, character + "*", Movement.RIGHT, startingStatus));
             startingStatus.addRule(new Rule(character, character, Movement.RIGHT, startingStatus));
