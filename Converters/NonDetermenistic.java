@@ -286,7 +286,9 @@ public class NonDetermenistic {
             }
             statusNameLastTape = statusNameInprogressTape;
             statusNameInprogressTape = new ArrayList<String>();
-            statusName.addAll(statusNameLastTape);
+            if(i != tapeNumber-1){
+                statusName.addAll(statusNameLastTape);
+            }
         }
         for(String status : states){
             for(String name : statusName){
@@ -296,9 +298,26 @@ public class NonDetermenistic {
             Status readingStatus = new Status("read#" + status);
             readingStatuses.add(readingStatus);
         }
+
         for(Status status : readingStatuses){
             for(String character : alphabet){
                 status.addRule(new Rule(character, character, Movement.RIGHT, status));
+            }
+            status.addRule(new Rule("#", "#", Movement.RIGHT, status));
+        }
+        
+        for(String status : states){
+            for(String name : statusNameLastTape){
+                Status readingStatus = new Status("read#" + status + name);                
+                readingStatuses.add(readingStatus);
+            }
+            Status readingStatus = new Status("read#" + status);
+            readingStatuses.add(readingStatus);
+        }
+
+        for(Status status : readingStatuses){
+            for(String character : alphabet){
+                
                 for(Status nextStatus : readingStatuses){
                     if(nextStatus.getName().equals(status.getName() + "#" + character)){
                         status.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, nextStatus));
@@ -308,7 +327,6 @@ public class NonDetermenistic {
                     }
                 }
             }
-            status.addRule(new Rule("#", "#", Movement.RIGHT, status));
         }
         statuses.addAll(readingStatuses);
         return readingStatuses;
