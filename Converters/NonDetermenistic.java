@@ -383,8 +383,8 @@ public class NonDetermenistic {
                 for(String character : alphabet){
                     writerStatuses.get(i).addRule(new Rule(character, character+"*", Movement.RIGHT, writingStatuses.get(i+1)));
                 }
-                controlStatusLeft.addRule(new Rule(writingStatuses.get(i).getName(), "*", Movement.RIGHT, writerStatuses.get(i)));
-                controlStatusRight.addRule(new Rule(writingStatuses.get(i).getName(), "*", Movement.RIGHT, writerStatuses.get(i)));
+                controlStatusLeft.addRule(new Rule(writerStatuses.get(i).getName(), "*", Movement.RIGHT, writingStatuses.get(i+1)));
+                controlStatusRight.addRule(new Rule(writerStatuses.get(i).getName(), "*", Movement.RIGHT, writingStatuses.get(i+1)));
             }
         }
         statuses.addAll(writerStatuses);
@@ -561,14 +561,14 @@ public class NonDetermenistic {
                     if(j == 0){
                         for(int k = 0; k < states.size(); k++){
                             if(inputRules.get(i).getMove()[j].equals("<")){
-                                writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.LEFT, "LeftPush&"+states.get(k), pushingStatusesLeft));
+                                writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(counter).getName(), Movement.LEFT, "LeftPush&"+states.get(k), pushingStatusesLeft));
                             }
                         }
                     }
                     if(inputRules.get(i).getMove()[j].equals(">")){
-                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(counter).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
                     } else if(inputRules.get(i).getMove()[j].equals("<")){
-                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.LEFT, pushingStatusesLeft.get(0)));
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(counter).getName(), Movement.LEFT, pushingStatusesLeft.get(0)));
                     }
                     counter++;
                 }

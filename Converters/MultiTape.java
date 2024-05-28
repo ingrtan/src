@@ -334,8 +334,8 @@ public class MultiTape {
                 for(String character : alphabet){
                     writerStatuses.get(i).addRule(new Rule(character, character+"*", Movement.RIGHT, writingStatuses.get(i+1)));
                 }
-                controlStatusLeft.addRule(new Rule(writingStatuses.get(i).getName(), "*", Movement.RIGHT, writerStatuses.get(i)));
-                controlStatusRight.addRule(new Rule(writingStatuses.get(i).getName(), "*", Movement.RIGHT, writerStatuses.get(i)));
+                controlStatusLeft.addRule(new Rule(writerStatuses.get(i).getName(), "*", Movement.RIGHT, writingStatuses.get(i+1)));
+                controlStatusRight.addRule(new Rule(writerStatuses.get(i).getName(), "*", Movement.RIGHT, writingStatuses.get(i+1)));
             }
         }
         statuses.addAll(writerStatuses);
@@ -438,9 +438,9 @@ public class MultiTape {
                         }
                     }
                     if(inputRules.get(i).getMove()[j].equals(">")){
-                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(counter).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
                     } else if(inputRules.get(i).getMove()[j].equals("<")){
-                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(counter).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
                     }
                     counter++;
                 }
