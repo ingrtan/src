@@ -31,11 +31,11 @@ public class MainWindow extends JFrame{
     private JFrame mainFrame;
     private JTextArea inputArea;
     private JTextArea convertedArea;
-    private NewWindow newWindow;
+    /*private NewWindow newWindow;
     private SaveWindow saveWindow;
     private LoadWindow loadWindow;
     private String fileName;
-    private int numberOfLines;
+    private int numberOfLines;*/
     private boolean nonDeterministic;
     private Head head;
     private JCheckBox deterministic;
@@ -103,6 +103,7 @@ public class MainWindow extends JFrame{
     private JSplitPane createSplitPane() {
         inputArea = new JTextArea();
         convertedArea = new JTextArea();
+        convertedArea.setEditable(false);
 
         JScrollPane leftScrollPane = new JScrollPane(inputArea);
         JScrollPane rightScrollPane = new JScrollPane(convertedArea);
@@ -179,14 +180,18 @@ public class MainWindow extends JFrame{
         JMenuItem newMenuItem = new JMenuItem("New");
         newMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (newWindow == null) {
+                /*if (newWindow == null) {
                     newWindow = new NewWindow();
                 }
                 mainFrame.setEnabled(false);
-                newWindow.setVisible(true);
+                newWindow.setVisible(true);*/
+                deterministic.setSelected(false);
+                inputArea.setText("");
+                convertedArea.setText("");
+                head = null;
             }
         });
-        JMenuItem saveMenuItem = new JMenuItem("Save");
+        /*JMenuItem saveMenuItem = new JMenuItem("Save");
         saveMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (saveWindow == null) {
@@ -205,7 +210,7 @@ public class MainWindow extends JFrame{
                 mainFrame.setEnabled(false);
                 loadWindow.setVisible(true);
             }
-        });
+        });*/
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -213,8 +218,8 @@ public class MainWindow extends JFrame{
             }
         });
         fileMenu.add(newMenuItem);
-        fileMenu.add(saveMenuItem);
-        fileMenu.add(loadMenuItem);
+        //fileMenu.add(saveMenuItem);
+        //fileMenu.add(loadMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
         return menuBar;
