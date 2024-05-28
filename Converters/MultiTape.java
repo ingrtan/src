@@ -357,6 +357,14 @@ public class MultiTape {
             }
             counter++;
         }
+        for(String character : alphabet){
+            controlStatusLeft.addRule(new Rule(character, character, Movement.LEFT, controlStatusLeft));
+            controlStatusRight.addRule(new Rule(character, character, Movement.RIGHT, controlStatusRight));
+        }
+        controlStatusLeft.addRule(new Rule("#", "#", Movement.LEFT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("#", "#", Movement.RIGHT, controlStatusRight));
+        controlStatusLeft.addRule(new Rule("*", "*", Movement.LEFT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("*", "*", Movement.RIGHT, controlStatusRight));
         statuses.add(controlStatusLeft);
         statuses.add(controlStatusRight);
     }

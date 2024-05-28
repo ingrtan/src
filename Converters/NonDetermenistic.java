@@ -406,6 +406,24 @@ public class NonDetermenistic {
             }
             counter++;
         }
+        for(String character : alphabet){
+            controlStatusLeft.addRule(new Rule(character, character, Movement.LEFT, controlStatusLeft));
+            controlStatusRight.addRule(new Rule(character, character, Movement.RIGHT, controlStatusRight));
+        }
+        controlStatusLeft.addRule(new Rule("#", "#", Movement.LEFT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("#", "#", Movement.RIGHT, controlStatusRight));
+        controlStatusLeft.addRule(new Rule("*", "*", Movement.LEFT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("*", "*", Movement.RIGHT, controlStatusRight));
+        controlStatusLeft.addRule(new Rule("&", "&", Movement.LEFT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("&", "&", Movement.RIGHT, controlStatusRight));
+        for(String state : states){
+            controlStatusLeft.addRule(new Rule("&"+state, "&"+state, Movement.LEFT, controlStatusLeft));
+            controlStatusRight.addRule(new Rule("&"+state, "&"+state, Movement.RIGHT, controlStatusRight));
+        }
+        for(int i = 0; i < inputRules.size(); i++){
+            controlStatusLeft.addRule(new Rule("&"+i, "&"+i, Movement.LEFT, controlStatusLeft));
+            controlStatusRight.addRule(new Rule("&"+i, "&"+i, Movement.RIGHT, controlStatusRight));
+        }
         statuses.add(controlStatusLeft);
         statuses.add(controlStatusRight);
     }
