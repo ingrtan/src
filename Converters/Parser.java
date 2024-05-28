@@ -25,10 +25,10 @@ public class Parser {
         ParsedRule rule = new ParsedRule();
         boolean start = true;
         int j = 0;
-        try{
         for (String line : lines) {
-            System.out.println(j + " a " + line + " a " + i);
             j++;
+            bugged = j;
+            try {
             if (start) {
                 startState = line.split("Starting: ")[1];
                 start = false;
@@ -50,6 +50,7 @@ public class Parser {
                     i++;
                 } else {
                     rule.setStateGoTo(line.split(": ")[0]);
+                    System.out.println(rule.getStateGoTo());
                     rule.setWrite(line.split(": ")[1].split(";"));
                     rule.setMove(line.split(": ")[2].split(";"));
                     rules.add(rule);
@@ -66,12 +67,13 @@ public class Parser {
                     }
                 }
             }
+            } catch (Exception e){
+                System.out.println("Error");
+                accept = false;
+                return;
+            }
         }
         accept = true;
-        } catch (Exception e){
-            accept = false;
-            bugged = j;
-        }
     }
 
     public ArrayList<String> getStates() {

@@ -33,6 +33,7 @@ public class MultiTape {
      * Converts the input string to a Turing machine
      */
     public void convert() {
+        output = "";
         parse();
         if(!check()){
             return;
@@ -51,7 +52,7 @@ public class MultiTape {
     }
 
     private boolean check() {
-        if(output != null) {
+        if(!output.equals("")) {
             return false;
         }
         if(states.isEmpty()) {
@@ -89,7 +90,7 @@ public class MultiTape {
      */
     private void parse(){
         Parser parser = new Parser(input);
-        if(!parser.isAccept()){
+        if(parser.isAccept()){
             states = parser.getStates();
             alphabet = parser.getAlphabet();
             inputRules = parser.getRules();
@@ -301,7 +302,7 @@ public class MultiTape {
                 Status writerStatus = new Status("write#" + inputRules.get(i).getState() + "#rule" + i + "#tape" + j + "#writer");
                 if(inputRules.get(i).isAccept()){
                     status.setAccept();
-                }else if(inputRules.get(i).getRead()[j].equals(" ")){
+                }else if(inputRules.get(i).getRead()[j].equals(" ") || inputRules.get(i).getRead()[j].equals("_")){
                     if(inputRules.get(i).getWrite()[j].equals(" ")){
                         status.addRule(new Rule("*", "*", convertMovement(inputRules.get(i).getMove()[j]), writerStatus));
                     } else {
@@ -428,16 +429,21 @@ public class MultiTape {
 
         int counter = 0;
         for(int i = 0; i <inputRules.size(); i++){
-            for(int j = 0; j < tapeNumber; j++){
-                if(j == tapeNumber-1){
-                    writerStatuses.get(counter).addRule(createRule(" ", " ", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getState(), goToStartReaderStatuses));
+            if(!inputRules.get(i).isAccept()){
+                for(int j = 0; j < tapeNumber; j++){
+                    if(j == tapeNumber-1){
+                        writerStatuses.get(counter).addRule(createRule(" ", "*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
+                        for(String character : alphabet){
+                            writerStatuses.get(counter).addRule(createRule(character, character+"*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
+                        }
+                    }
+                    if(inputRules.get(i).getMove()[j].equals(">")){
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
+                    } else if(inputRules.get(i).getMove()[j].equals("<")){
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
+                    }
+                    counter++;
                 }
-                if(inputRules.get(i).getMove()[j].equals(">")){
-                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
-                } else if(inputRules.get(i).getMove()[j].equals("<")){
-                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesLeft.get(0)));
-                }
-                counter++;
             }
         }
 

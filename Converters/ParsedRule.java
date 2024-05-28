@@ -40,7 +40,7 @@ public class ParsedRule {
     }
 
     public boolean validate() {
-        return (read.length == write.length && write.length == move.length) || accept;
+        return accept || (read.length == write.length && write.length == move.length);
     }
 
     public String getState() {

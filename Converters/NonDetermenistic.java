@@ -40,6 +40,7 @@ public class NonDetermenistic {
      * Converts the input string to a Turing machine
      */
     public void convert() {
+        output = "";
         parse();
         if(!check()){
             return;
@@ -59,7 +60,7 @@ public class NonDetermenistic {
     }
 
     private boolean check() {
-        if(output != null) {
+        if(!output.equals("")) {
             return false;
         }
         if(states.isEmpty()) {
@@ -350,7 +351,7 @@ public class NonDetermenistic {
                 Status writerStatus = new Status("write#" + inputRules.get(i).getState() + "#rule" + i + "#tape" + j + "#writer");
                 if(inputRules.get(i).isAccept()){
                     status.setAccept();
-                }else if(inputRules.get(i).getRead()[j].equals(" ")){
+                }else if(inputRules.get(i).getRead()[j].equals(" ") || inputRules.get(i).getRead()[j].equals("_")){
                     if(inputRules.get(i).getWrite()[j].equals(" ")){
                         status.addRule(new Rule("*", "*", convertMovement(inputRules.get(i).getMove()[j]), writerStatus));
                     } else {
@@ -522,28 +523,33 @@ public class NonDetermenistic {
 
         int counter = 0;
         for(int i = 0; i <inputRules.size(); i++){
-            for(int j = 0; j < tapeNumber; j++){
-                if(j == tapeNumber-1){
-                    writerStatuses.get(counter).addRule(createRule("&"+i, writerStatuses.get(i).getName(), Movement.LEFT, "goToStartRead#"+inputRules.get(i).getState(), goToStartReaderStatuses));
-                    for(int k = 0; k < inputRules.size(); k++){
-                        if(inputRules.get(i).getMove()[j].equals(">")){
-                            writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.RIGHT, "RightPush&"+k, pushingStatusesRight));
+            if(!inputRules.get(i).isAccept()){
+                for(int j = 0; j < tapeNumber; j++){
+                    if(j == tapeNumber-1){
+                        writerStatuses.get(counter).addRule(createRule("&"+i, writerStatuses.get(i).getName(), Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
+                        for(String character : alphabet){
+                            writerStatuses.get(counter).addRule(createRule(character, character+"*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
+                        }
+                        for(int k = 0; k < inputRules.size(); k++){
+                            if(inputRules.get(i).getMove()[j].equals(">")){
+                                writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.RIGHT, "RightPush&"+k, pushingStatusesRight));
+                            }
                         }
                     }
-                }
-                if(j == 0){
-                    for(int k = 0; k < states.size(); k++){
-                        if(inputRules.get(i).getMove()[j].equals("<")){
-                            writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.LEFT, "LeftPush&"+states.get(k), pushingStatusesLeft));
+                    if(j == 0){
+                        for(int k = 0; k < states.size(); k++){
+                            if(inputRules.get(i).getMove()[j].equals("<")){
+                                writerStatuses.get(counter).addRule(createRule("&"+k, writerStatuses.get(i).getName(), Movement.LEFT, "LeftPush&"+states.get(k), pushingStatusesLeft));
+                            }
                         }
                     }
+                    if(inputRules.get(i).getMove()[j].equals(">")){
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
+                    } else if(inputRules.get(i).getMove()[j].equals("<")){
+                        writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.LEFT, pushingStatusesLeft.get(0)));
+                    }
+                    counter++;
                 }
-                if(inputRules.get(i).getMove()[j].equals(">")){
-                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.RIGHT, pushingStatusesRight.get(0)));
-                } else if(inputRules.get(i).getMove()[j].equals("<")){
-                    writerStatuses.get(counter).addRule(new Rule("#", writerStatuses.get(i).getName(), Movement.LEFT, pushingStatusesLeft.get(0)));
-                }
-                counter++;
             }
         }
 
@@ -748,4 +754,4 @@ public class NonDetermenistic {
 
 }
 
-//Writer pushing statuses on case of &
+//create cleanup for read if there is no rule
