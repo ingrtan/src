@@ -224,19 +224,8 @@ public class MainWindow extends JFrame{
         menuBar.add(fileMenu);
         return menuBar;
     }
-
-    /**
-     * The window which used to start creating a new Turing Machine.
-     */
-    private class NewWindow extends JFrame{
-        private static final long serialVersionUID = 1L;
-        private JTextField numberOfLinesField;
-        private JButton createButton;
-        private JCheckBox deterministic;
-
-        /**
-         * Creates a new window.
-         */
+    
+    /* 
         public NewWindow(){
             super("New");
             addWindowListener(new WindowAdapter() {
@@ -271,17 +260,12 @@ public class MainWindow extends JFrame{
     
     }
 
-    /**
-     * A window which used to save the Turing Machine.
-     */
+
     private class SaveWindow extends JFrame{
         private static final long serialVersionUID = 1L;
         private JTextField fileNameField;
         private JButton saveButton;
 
-        /**
-         * Creates a new SaveWindow.
-         */
         public SaveWindow(){
             super("Save");
             addWindowListener(new WindowAdapter() {
@@ -316,17 +300,11 @@ public class MainWindow extends JFrame{
         }
     }
 
-    /**
-     * A window which used to load a Turing Machine.
-     */
     private class LoadWindow extends JFrame{
         private static final long serialVersionUID = 1L;
         private JTextField fileNameField;
         private JButton loadButton;
 
-        /**
-         * Constructor.
-         */
         public LoadWindow(){
             super("Load");
             addWindowListener(new WindowAdapter() {
@@ -359,4 +337,7 @@ public class MainWindow extends JFrame{
             setResizable(false);
         }
     }
+ */
 }
+
+
