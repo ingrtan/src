@@ -451,6 +451,9 @@ public class MultiTape {
                     counter++;
                 }
             }
+            else{
+                counter += tapeNumber;
+            }
         }
 
         for(int i = 0; i < states.size(); i++){

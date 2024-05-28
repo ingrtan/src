@@ -581,6 +581,8 @@ public class NonDetermenistic {
                     }
                     counter++;
                 }
+            }else{
+                counter += tapeNumber;
             }
         }
 
