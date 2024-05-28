@@ -346,10 +346,12 @@ public class MultiTape {
     /**
      * Creates the control status for the Turing machine
      */
-    private void createControlStatuses(ArrayList<Status> writingStatuses, ArrayList<Status> readingStatuses){
+    private void createControlStatuses(ArrayList<Status> writingStatuses){
         for(String character : alphabet){
             controlStatusLeft.addRule(new Rule(character, character, Movement.RIGHT, controlStatusLeft));
+            controlStatusLeft.addRule(new Rule(character+"*", character+"*", Movement.RIGHT, controlStatusLeft));
             controlStatusRight.addRule(new Rule(character, character, Movement.LEFT, controlStatusRight));
+            controlStatusRight.addRule(new Rule(character+"*", character+"*", Movement.LEFT, controlStatusRight));
         }
         controlStatusLeft.addRule(new Rule("#", "#", Movement.RIGHT, controlStatusLeft));
         controlStatusRight.addRule(new Rule("#", "#", Movement.LEFT, controlStatusRight));
@@ -451,7 +453,7 @@ public class MultiTape {
             goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
         }
 
-        createControlStatuses(writingStatuses, readingStatuses);
+        createControlStatuses(writingStatuses);
     }
 
     /**

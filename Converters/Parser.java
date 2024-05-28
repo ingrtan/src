@@ -50,7 +50,6 @@ public class Parser {
                     i++;
                 } else {
                     rule.setStateGoTo(line.split(": ")[0]);
-                    System.out.println(rule.getStateGoTo());
                     rule.setWrite(line.split(": ")[1].split(";"));
                     rule.setMove(line.split(": ")[2].split(";"));
                     rules.add(rule);
