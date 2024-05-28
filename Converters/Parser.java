@@ -34,7 +34,7 @@ public class Parser {
                 start = false;
                 continue;
             }
-            if (line.equals("")) {
+            if (line.equals("") || firstTwo(line).equals("//")) {
                 i = 0;
                 continue;
             }
@@ -73,6 +73,10 @@ public class Parser {
             }
         }
         accept = true;
+    }
+
+    private String firstTwo(String str) {
+        return str.length() < 2 ? str : str.substring(0, 2);
     }
 
     public ArrayList<String> getStates() {
