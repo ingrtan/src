@@ -55,6 +55,7 @@ public class NonDetermenistic {
             outputBuilder.append("\n");
         }
         output = outputBuilder.toString();
+        head.setStatuses(statuses);
     }
 
     private boolean check() {
