@@ -45,6 +45,9 @@ public class MultiTape {
         createSetupRules();
         StringBuilder outputBuilder = new StringBuilder();
         for(Status status : statuses){
+            if(status.toString().equals("")){
+                continue;
+            }
             outputBuilder.append(status.toString());
             outputBuilder.append("\n");
         }

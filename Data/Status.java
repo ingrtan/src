@@ -73,6 +73,9 @@ public class Status {
      * @return
      */
     public String toString(){
+        if(rules.isEmpty()){
+            return "";
+        }
         StringBuilder result = new StringBuilder();
         for(Rule r:rules){
             if(r == null){
