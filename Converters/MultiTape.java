@@ -334,6 +334,8 @@ public class MultiTape {
                 for(String character : alphabet){
                     writerStatuses.get(i).addRule(new Rule(character, character+"*", Movement.RIGHT, writingStatuses.get(i+1)));
                 }
+                controlStatusLeft.addRule(new Rule(writingStatuses.get(i).getName(), "*", Movement.RIGHT, writerStatuses.get(i)));
+                controlStatusRight.addRule(new Rule(writingStatuses.get(i).getName(), "*", Movement.RIGHT, writerStatuses.get(i)));
             }
         }
         statuses.addAll(writerStatuses);
@@ -344,27 +346,15 @@ public class MultiTape {
     /**
      * Creates the control status for the Turing machine
      */
-    private void createControlStatuses(ArrayList<Status> writingStatuses){
-        int counter = 0;
-        int ruleCounter = 0;
-        for(Status status : writerStatuses){
-            if(counter < tapeNumber-1){
-                controlStatusLeft.addRule(new Rule(status.getName(), "*", Movement.RIGHT, writingStatuses.get(counter+1)));
-                controlStatusRight.addRule(new Rule(status.getName(), "*", Movement.RIGHT, writingStatuses.get(counter+1)));
-            } else {
-                controlStatusLeft.addRule(createRule(status.getName(), "*", Movement.LEFT, "goToStartRead#"+inputRules.get(ruleCounter).getState()));
-                controlStatusRight.addRule(createRule(status.getName(), "*", Movement.LEFT, "goToStartRead#"+inputRules.get(ruleCounter).getState()));
-            }
-            counter++;
-        }
+    private void createControlStatuses(ArrayList<Status> writingStatuses, ArrayList<Status> readingStatuses){
         for(String character : alphabet){
-            controlStatusLeft.addRule(new Rule(character, character, Movement.LEFT, controlStatusLeft));
-            controlStatusRight.addRule(new Rule(character, character, Movement.RIGHT, controlStatusRight));
+            controlStatusLeft.addRule(new Rule(character, character, Movement.RIGHT, controlStatusLeft));
+            controlStatusRight.addRule(new Rule(character, character, Movement.LEFT, controlStatusRight));
         }
-        controlStatusLeft.addRule(new Rule("#", "#", Movement.LEFT, controlStatusLeft));
-        controlStatusRight.addRule(new Rule("#", "#", Movement.RIGHT, controlStatusRight));
-        controlStatusLeft.addRule(new Rule("*", "*", Movement.LEFT, controlStatusLeft));
-        controlStatusRight.addRule(new Rule("*", "*", Movement.RIGHT, controlStatusRight));
+        controlStatusLeft.addRule(new Rule("#", "#", Movement.RIGHT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("#", "#", Movement.LEFT, controlStatusRight));
+        controlStatusLeft.addRule(new Rule("*", "*", Movement.RIGHT, controlStatusLeft));
+        controlStatusRight.addRule(new Rule("*", "*", Movement.LEFT, controlStatusRight));
         statuses.add(controlStatusLeft);
         statuses.add(controlStatusRight);
     }
@@ -441,6 +431,8 @@ public class MultiTape {
                 for(int j = 0; j < tapeNumber; j++){
                     if(j == tapeNumber-1){
                         writerStatuses.get(counter).addRule(createRule(" ", "*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
+                        controlStatusLeft.addRule(createRule(writerStatuses.get(counter).getName(), "*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
+                        controlStatusRight.addRule(createRule(writerStatuses.get(counter).getName(), "*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
                         for(String character : alphabet){
                             writerStatuses.get(counter).addRule(createRule(character, character+"*", Movement.LEFT, "goToStartRead#"+inputRules.get(i).getStateGoTo(), goToStartReaderStatuses));
                         }
@@ -459,7 +451,7 @@ public class MultiTape {
             goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
         }
 
-        createControlStatuses(writingStatuses);
+        createControlStatuses(writingStatuses, readingStatuses);
     }
 
     /**
