@@ -554,7 +554,6 @@ public class NonDetermenistic {
         }
 
         for(int i = 0; i < states.size(); i++){
-            //goToStartReaderStatuses.get(i).addRule(createRule(" ", " ", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
             controlReaderStatus.addRule(createRule("&"+i, "&", Movement.RIGHT, "read#"+states.get(i), readingStatuses));
         }
 
@@ -565,6 +564,7 @@ public class NonDetermenistic {
         }
         goToRightControl.addRule(new Rule("#", "#", Movement.LEFT, goToRightControl));
         goToRightControl.addRule(new Rule("*", "*", Movement.LEFT, goToRightControl));
+        goToRightControl.addRule(new Rule("&", "&", Movement.LEFT, goToRightControl));
         for(String state: states){
             goToRightControl.addRule(new Rule("&"+state, "&"+state, Movement.LEFT, goToRightControl));
         }
@@ -572,7 +572,33 @@ public class NonDetermenistic {
         controlWriterStatus.addRule(new Rule(" ", " ", Movement.LEFT, goToRightControl));
         goToRightControl.addRule(new Rule(" ", " ", Movement.RIGHT, controlReaderStatus));
 
+        cleanupRuling(readingStatuses);
         createControlStatuses(writingStatuses);
+    }
+
+    private void cleanupRuling(ArrayList<Status> statuses){
+        ArrayList<String> statusNames = new ArrayList<String>();
+        for(ParsedRule rule : inputRules){
+            StringBuilder statusName = new StringBuilder("read#");
+            statusName.append(rule.getState());
+            for(String read : rule.getRead()){
+                statusName.append("#");
+                statusName.append(read);
+            }
+            statusNames.add(statusName.toString());
+        }
+        for(Status status : statuses){
+            if(!statusNames.contains(status.getName())){
+                for(String character : alphabet){
+                    status.addRule(new Rule(character,character,Movement.RIGHT,controlReaderStatus));
+                }
+                status.addRule(new Rule(" "," ",Movement.STAY,controlReaderStatus));
+                status.addRule(new Rule("&","&",Movement.RIGHT,controlReaderStatus));
+                for(String state : states){
+                    status.addRule(new Rule("&"+state,"&"+state,Movement.STAY,controlReaderStatus));
+                }
+            }
+        }
     }
 
     /**
@@ -631,6 +657,7 @@ public class NonDetermenistic {
         }
         copySearchStatus.addRule(new Rule("#", "#", Movement.LEFT, copySearchStatus));
         copySearchStatus.addRule(new Rule("*", "*", Movement.LEFT, copySearchStatus));
+        copySearchStatus.addRule(new Rule("&", "&", Movement.LEFT, copySearchStatus));
         for(int i = 0; i < inputRules.size(); i++){
             copySearchStatus.addRule(new Rule("&"+i, "&"+i, Movement.LEFT, copySearchStatus));
         }
@@ -656,6 +683,7 @@ public class NonDetermenistic {
             }
             status.addRule(new Rule("#", "#", Movement.RIGHT, status));
             status.addRule(new Rule("*", "*", Movement.RIGHT, status));
+            status.addRule(new Rule("&", "&", Movement.RIGHT, status));
             for(int i = 0; i < inputRules.size(); i++){
                 status.addRule(new Rule("&"+i, "&"+i, Movement.RIGHT, status));
             }
