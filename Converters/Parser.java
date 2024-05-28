@@ -45,21 +45,21 @@ public class Parser {
             } else {
                 if (i==0){
                     rule = new ParsedRule();
-                    rule.setState(line.split(": ")[0]);
-                    rule.setRead(line.split(": ")[1].split(";"));
+                    rule.setState(line.split(" ")[0]);
+                    rule.setRead(line.split(" ")[1].split(";"));
                     i++;
                 } else {
-                    rule.setStateGoTo(line.split(": ")[0]);
-                    rule.setWrite(line.split(": ")[1].split(";"));
-                    rule.setMove(line.split(": ")[2].split(";"));
+                    rule.setStateGoTo(line.split(" ")[0]);
+                    rule.setWrite(line.split(" ")[1].split(";"));
+                    rule.setMove(line.split(" ")[2].split(";"));
                     rules.add(rule);
                     i = 0;
                 }
-                String state = line.split(": ")[0];
+                String state = line.split(" ")[0];
                 if (!states.contains(state)) {
                     states.add(state);
                 }
-                String[] parts = line.split(": ")[1].split(";");
+                String[] parts = line.split(" ")[1].split(";");
                 for (String part : parts) {
                     if (!alphabet.contains(part)) {
                         alphabet.add(part);
