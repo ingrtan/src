@@ -48,6 +48,11 @@ public class SimulatorWindow extends JFrame{
                 head2.reset();
                 String input = inputArea.getText();
                 String[] parts = input.split(";");
+                for(int i = 0; i < parts.length; i++){
+                    if(parts[i].length() == 0){
+                        parts[i] = " ";
+                    }
+                }
                 head2.setup(parts);
                 ArrayList<String> lines = head2.getLines();
                 leftTape2.setText(lines.get(0));
