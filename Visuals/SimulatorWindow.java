@@ -1,6 +1,7 @@
 package Visuals;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,7 @@ public class SimulatorWindow extends JFrame{
     private JTextField inputArea;
     private JButton startButton;
     private JButton stepButton;
+    private JButton runButton;
     //private Head head;
     private JTextField leftTape2;
     private JTextField leftTape;
@@ -43,6 +45,7 @@ public class SimulatorWindow extends JFrame{
         inputArea = new JTextField(20);
         startButton = new JButton("Start");
         stepButton = new JButton("Step");
+        runButton = new JButton("Run");
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 head2.reset();
@@ -88,6 +91,30 @@ public class SimulatorWindow extends JFrame{
                 }
             }
         });
+        runButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(running == false){
+                    return;
+                }
+                head2.run();
+                ArrayList<String> lines = head2.getLines();
+                leftTape2.setText(lines.get(0));
+                leftTape.setText(lines.get(1));
+                middleTape.setText(lines.get(2));
+                rightTape.setText(lines.get(3));
+                rightTape2.setText(lines.get(4));
+                if(head2.isStopped()){
+                    running = false;
+                    if(head2.isAccept()){
+                        status.setText("Accepted");
+                    }else{
+                        status.setText("Rejected");
+                    }
+                }else{
+                    status.setText(head2.getStatusName());
+                }
+            }
+        });
         panel = new JPanel(new BorderLayout());
         JPanel tapePanel = new JPanel(new FlowLayout());
         int tapeLength = head2.getLongestStatusName();
@@ -101,6 +128,11 @@ public class SimulatorWindow extends JFrame{
         middleTape.setEditable(false);
         rightTape.setEditable(false);
         rightTape2.setEditable(false);
+        leftTape2.setBackground(Color.LIGHT_GRAY);
+        leftTape.setBackground(Color.LIGHT_GRAY);
+        middleTape.setBackground(Color.GREEN);
+        rightTape.setBackground(Color.LIGHT_GRAY);
+        rightTape2.setBackground(Color.LIGHT_GRAY);
         leftTape2.setHorizontalAlignment(JLabel.CENTER);
         leftTape.setHorizontalAlignment(JLabel.CENTER);
         middleTape.setHorizontalAlignment(JLabel.CENTER);
@@ -112,13 +144,16 @@ public class SimulatorWindow extends JFrame{
         tapePanel.add(rightTape);
         tapePanel.add(rightTape2);
         panel.add(tapePanel, BorderLayout.NORTH);
-        status = new JTextField();
+        status = new JTextField(tapeLength);
         status.setEditable(false);
+        status.setBackground(Color.LIGHT_GRAY);
+        status.setHorizontalAlignment(JLabel.CENTER);
         panel.add(status, BorderLayout.CENTER);
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(inputArea);
         buttonPanel.add(startButton);
         buttonPanel.add(stepButton);
+        buttonPanel.add(runButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
         add(panel);
 
