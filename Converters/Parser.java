@@ -7,7 +7,7 @@ public class Parser {
     private ArrayList<String> states = new ArrayList<String>();
     private ArrayList<ParsedRule> rules = new ArrayList<ParsedRule>();
     private ArrayList<String> alphabet = new ArrayList<String>();
-    private String startState;
+    private String startState = "";
     private boolean accept = false;
     private int bugged;
 
@@ -25,6 +25,10 @@ public class Parser {
         ParsedRule rule = new ParsedRule();
         boolean start = true;
         int j = 0;
+        if(input.equals("")){
+            accept = true;
+            return;
+        }
         for (String line : lines) {
             j++;
             bugged = j;
@@ -38,7 +42,7 @@ public class Parser {
                 i = 0;
                 continue;
             }
-            if (line.equals("accept")) {
+            if (line.equals("Accept")) {
                 rule.setAccept(true);
                 rules.add(rule);
                 i = 0;
@@ -67,6 +71,7 @@ public class Parser {
                 }
             }
             } catch (Exception e){
+                System.err.println("Error in line " + j + ": " + e.getMessage());
                 System.out.println("Error");
                 accept = false;
                 return;

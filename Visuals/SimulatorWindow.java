@@ -31,13 +31,13 @@ public class SimulatorWindow extends JFrame{
     private JTextField status;
     boolean running = false;
 
-    public SimulatorWindow(Head head2, JFrame mainFrame){
+    public SimulatorWindow(Head head2, JButton simulateButton, JFrame mainFrame){
         super("Simulator");
         //this.head = head;
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                mainFrame.setEnabled(true);
+                simulateButton.setEnabled(true);
             }
         });
         inputArea = new JTextField(20);

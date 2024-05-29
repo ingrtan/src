@@ -73,6 +73,9 @@ public class Status {
      * @return
      */
     public String toString(){
+        if(isAccept()){
+            return name + " Accept\n";
+        }
         if(rules.isEmpty()){
             return "";
         }
@@ -81,7 +84,7 @@ public class Status {
             if(r == null){
                 result.append(name + "null\n");
             }else{
-            result.append(name + ": ");
+            result.append(name + " ");
             result.append(r.getReading() + "\n");
             result.append(r.getWrintingParts() + "\n");
             result.append("\n");

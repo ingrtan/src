@@ -12,17 +12,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import Data.Head;
 import Converters.MultiTape;
 import Converters.NonDetermenistic;
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+
 
 /**
  * The main window of the application.
@@ -31,11 +28,6 @@ public class MainWindow extends JFrame{
     private JFrame mainFrame;
     private JTextArea inputArea;
     private JTextArea convertedArea;
-    /*private NewWindow newWindow;
-    private SaveWindow saveWindow;
-    private LoadWindow loadWindow;
-    private String fileName;
-    private int numberOfLines;*/
     private boolean nonDeterministic;
     private Head head;
     private JCheckBox deterministic;
@@ -57,6 +49,7 @@ public class MainWindow extends JFrame{
         JPanel converterPanel = createConverterPanel();
         getContentPane().add(converterPanel);
         setVisible(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -66,17 +59,10 @@ public class MainWindow extends JFrame{
         setTitle("Turing converter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        int Width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        int Height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        this.setSize(Width/2,Height/2);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-    }
-
-    /**
-     * Creates the main panel.
-     * @return
-     */
-    private JPanel createMainPanel(){
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new CardLayout());
-        return mainPanel;
     }
 
     /**
@@ -153,7 +139,8 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(head != null){
-                    SimulatorWindow simWin = new SimulatorWindow(head, mainFrame);
+                    SimulatorWindow simWin = new SimulatorWindow(head, simulateButton, mainFrame);
+                    simulateButton.setEnabled(false);
                     simWin.setVisible(true);
                 }
             }
@@ -180,37 +167,12 @@ public class MainWindow extends JFrame{
         JMenuItem newMenuItem = new JMenuItem("New");
         newMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /*if (newWindow == null) {
-                    newWindow = new NewWindow();
-                }
-                mainFrame.setEnabled(false);
-                newWindow.setVisible(true);*/
                 deterministic.setSelected(false);
                 inputArea.setText("");
                 convertedArea.setText("");
                 head = null;
             }
         });
-        /*JMenuItem saveMenuItem = new JMenuItem("Save");
-        saveMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (saveWindow == null) {
-                    saveWindow = new SaveWindow();
-                }
-                mainFrame.setEnabled(false);
-                saveWindow.setVisible(true);
-            }
-        });
-        JMenuItem loadMenuItem = new JMenuItem("Load");
-        loadMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (loadWindow == null) {
-                    loadWindow = new LoadWindow();
-                }
-                mainFrame.setEnabled(false);
-                loadWindow.setVisible(true);
-            }
-        });*/
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -218,126 +180,8 @@ public class MainWindow extends JFrame{
             }
         });
         fileMenu.add(newMenuItem);
-        //fileMenu.add(saveMenuItem);
-        //fileMenu.add(loadMenuItem);
         fileMenu.add(exitMenuItem);
         menuBar.add(fileMenu);
         return menuBar;
     }
-    
-    /* 
-        public NewWindow(){
-            super("New");
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    mainFrame.setEnabled(true);
-                }
-            });
-            deterministic = new JCheckBox("Non-Deterministic");    
-            createButton = new JButton("Create");
-            createButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    numberOfLines = Integer.parseInt(numberOfLinesField.getText());
-                    mainFrame.setEnabled(true);
-                    setVisible(false);
-                    nonDeterministic = deterministic.isSelected();
-                    numberOfLinesField.setText("");
-                    //createNew();
-                }
-            });
-            JPanel panel = new JPanel(new FlowLayout());
-            panel.add(deterministic);
-            panel.add(createButton);
-            add(panel);
-
-            // Set window properties
-            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            pack();
-            setLocationRelativeTo(mainFrame);
-            setResizable(false);
-        }
-    
-    }
-
-
-    private class SaveWindow extends JFrame{
-        private static final long serialVersionUID = 1L;
-        private JTextField fileNameField;
-        private JButton saveButton;
-
-        public SaveWindow(){
-            super("Save");
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    mainFrame.setEnabled(true);
-                }
-            });
-            fileNameField = new JTextField(20);
-            saveButton = new JButton("Save");
-            saveButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    fileName = fileNameField.getText();
-                    setVisible(false);
-                    fileNameField.setText("");
-                    mainFrame.setEnabled(true);
-                    mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                    save();
-                }
-            });
-            JPanel panel = new JPanel(new FlowLayout());
-            panel.add(new JLabel("File Name:"));
-            panel.add(fileNameField);
-            panel.add(saveButton);
-            add(panel);
-
-            // Set window properties
-            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            pack();
-            setLocationRelativeTo(mainFrame);
-            setResizable(false);
-        }
-    }
-
-    private class LoadWindow extends JFrame{
-        private static final long serialVersionUID = 1L;
-        private JTextField fileNameField;
-        private JButton loadButton;
-
-        public LoadWindow(){
-            super("Load");
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    mainFrame.setEnabled(true);
-                }
-            });
-            fileNameField = new JTextField(20);
-            loadButton = new JButton("Load");
-            loadButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    fileName = fileNameField.getText();
-                    mainFrame.setEnabled(true);
-                    setVisible(false);
-                    fileNameField.setText("");
-                    load();
-                }
-            });
-            JPanel panel = new JPanel(new FlowLayout());
-            panel.add(new JLabel("File Name:"));
-            panel.add(fileNameField);
-            panel.add(loadButton);
-            add(panel);
-
-            // Set window properties
-            setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            pack();
-            setLocationRelativeTo(mainFrame);
-            setResizable(false);
-        }
-    }
- */
 }
-
-
