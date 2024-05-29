@@ -153,7 +153,7 @@ public class SimulatorWindow extends JFrame{
         buttonPanel.add(inputArea);
         buttonPanel.add(startButton);
         buttonPanel.add(stepButton);
-        buttonPanel.add(runButton);
+        //buttonPanel.add(runButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
         add(panel);
 
