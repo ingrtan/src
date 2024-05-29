@@ -142,6 +142,8 @@ public class MainWindow extends JFrame{
                     SimulatorWindow simWin = new SimulatorWindow(head, simulateButton, mainFrame);
                     simulateButton.setEnabled(false);
                     simWin.setVisible(true);
+                }else{
+                    convertedArea.setText("Please convert first.");
                 }
             }
         });
